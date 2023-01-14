@@ -12,12 +12,12 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+//Documentation: first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/(last_part).html
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive; //might not be needed if we have SwerveDrive working
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.math.controller.PIDController;
@@ -38,7 +38,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 //import com.cuforge.libcu.Lasershark;
 
 //Xbox support
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController; //Same as line 20
 
 //import edu.wpi.first.wpilibj.Ultrasonic;
 
@@ -300,7 +300,7 @@ public class Robot extends TimedRobot {
     //SET TO 0 FOR XBOX CONTROLLER
     //SET TO 1 FOR EVERYTHING ELSE
 
-    controllerType = 0;
+    controllerType = 1;
 
     //Controllers
     if (controllerType == 0) {
@@ -346,7 +346,7 @@ public class Robot extends TimedRobot {
       climbButton = leftStick.getRawButton(2);
       elevatorDownButton = leftStick.getRawButton(3);
       speedIncreaseButton = rightStick.getRawButton(7);
-      resetNavX = rightStick.getRawButton(4);
+      resetNavX = rightStick.getRawButton(4); //Navx Reset coded already -Taven
     }
     else {
       xAxis = 0;
