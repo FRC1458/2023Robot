@@ -38,7 +38,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 //import com.cuforge.libcu.Lasershark;
 
 //Xbox support
-import edu.wpi.first.wpilibj.XboxController; //Same as line 20
+import edu.wpi.first.wpilibj.XboxController;
 
 //import edu.wpi.first.wpilibj.Ultrasonic;
 
