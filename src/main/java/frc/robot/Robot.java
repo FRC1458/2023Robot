@@ -340,7 +340,7 @@ public class Robot extends TimedRobot {
     else if (controllerType == 1) {
       xAxis = leftStick.getRawAxis(0);
       yAxis = leftStick.getRawAxis(1);
-      rAxis = rightStick.getRawAxis(0);
+      rAxis = leftStick.getRawAxis(3);
       depositButton = leftStick.getRawButton(0);
       elevatorUpButton = leftStick.getRawButton(1);
       climbButton = leftStick.getRawButton(2);
