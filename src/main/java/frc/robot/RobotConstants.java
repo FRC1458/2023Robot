@@ -37,7 +37,7 @@ public class RobotConstants {
     public final static double backRightXMeters = -0.273;
     public final static double backRightYMeters = -0.273;
 
-    public final static double swerveDriveGearRatio = 4096.0;//THING WE ARE TESTING!!!
+    public final static double swerveDriveGearRatio = 12.8;//THING WE ARE TESTING!!!
 
     // public final static int intakeMotorID = 29;
     // public final static int rightElevatorMotorID = 36;
@@ -65,6 +65,11 @@ public class RobotConstants {
     public final static double boostedSpeed = .75;
 
     public final static boolean fieldOriented = true;
+
+    public final static int frontLeftAbsoluteEncoderID = 28;
+    public final static int frontRightAbsoluteEncoderID = 18;
+    public final static int backLeftAbsoluteEncoderID = 17;
+    public final static int backRightAbsoluteEncoderID = 27;
 
     // CHANGE ALL THESE VALUES TO REAL NUMBERS
     public final static double frontLeftDistance = 0;

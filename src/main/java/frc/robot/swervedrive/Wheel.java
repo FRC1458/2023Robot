@@ -27,7 +27,8 @@ public class Wheel{
     private CANSparkMax angleMotor;
     private CANSparkMax speedMotor;
     private SparkMaxPIDController pidController;
-    public final AbsoluteEncoder absoluteEncoder;
+    public final RelativeEncoder encoder;
+    private TalonSRX absoluteEncoder;
     
     //private ControlType controltype;
 
@@ -42,30 +43,21 @@ public class Wheel{
 
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
-    public Wheel (int angleMotorID, int speedMotorID, String wheelName, double offset) {
+    public Wheel (int angleMotorID, int speedMotorID, int absoluteEncoderID, String wheelName, double offset) {
         this.angleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
         this.speedMotor = new CANSparkMax(speedMotorID, MotorType.kBrushless);
-        angleMotor.getEncoder();
-        speedMotor.getEncoder();
-        this.absoluteEncoder = this.angleMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        angleMotor.getEncoder();
+        this.absoluteEncoder = new TalonSRX(absoluteEncoderID);
         this.offset = offset;
+
+        this.absoluteEncoder.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
         this.wheelName = wheelName;
         
-        speedMotor.restoreFactoryDefaults();
-        angleMotor.restoreFactoryDefaults();
+        //angleMotor.restoreFactoryDefaults();
 
         pidController = angleMotor.getPIDController();
-        //pidController.setFeedbackDevice(absoluteEncoder);
-
+        encoder = angleMotor.getEncoder();
         SmartDashboard.putNumber("Rotations", 0);
-
-        angleMotor.restoreFactoryDefaults();
-        speedMotor.restoreFactoryDefaults();
-
-        absoluteEncoder.setPositionConversionFactor(2*Math.PI);
-        absoluteEncoder.setVelocityConversionFactor(2*Math.PI/60);
 
         kP = RobotConstants.kP; 
         kI = RobotConstants.kI;
@@ -93,9 +85,6 @@ public class Wheel{
         SmartDashboard.putNumber("P Gain", kP);
         SmartDashboard.putNumber("I Gain", kI);
         SmartDashboard.putNumber("D Gain", kD);
-
-        angleMotor.burnFlash();
-        speedMotor.burnFlash();
     }
 
     public void drive (double speed, double angle) {
@@ -114,12 +103,10 @@ public class Wheel{
         if((d != kD)) { pidController.setD(d); kD = d; }
 
         
-        double processVariable = absoluteEncoder.getPosition();
-        SmartDashboard.putNumber("ProccessVariable" + wheelName, processVariable);
-
+        double processVariable = encoder.getPosition();
         // SmartDashboard.putNumber("Output" + wheelName, angleMotor.getAppliedOutput());
 
-        SmartDashboard.putNumber("Angle Motor Current (Amps)" + wheelName, angleMotor.getOutputCurrent());
+        // SmartDashboard.putNumber("Angle Motor Current (Amps)" + wheelName, angleMotor.getOutputCurrent());
         // SmartDashboard.putNumber("Speed Motor Current (Amps)", speedMotor.getOutputCurrent());
 
         
@@ -129,7 +116,7 @@ public class Wheel{
         double diff = (currentAngle - goalAngle) % 360;
 
         if (Math.abs(diff) > 180) {
-          diff = diff - 360*Math.signum(diff); // add or subtract 360 so the difference is always smaller than 180
+        diff = diff - 360*Math.signum(diff); // add or subtract 360 so the difference is always smaller than 180
         }
 
         double realGoalRotations = (currentAngle - diff) * RobotConstants.swerveDriveGearRatio/360;
@@ -147,22 +134,28 @@ public class Wheel{
         // rotations = SmartDashboard.getNumber("Rotations", 0);
 
         if (speed != 0 || diagnostic){
-            //pidController.setReference(realGoalRotations, CANSparkMax.ControlType.kPosition);
+            pidController.setReference(realGoalRotations, CANSparkMax.ControlType.kPosition);
         }
-        //speedMotor.set(speed);
+        speedMotor.set(speed);
     }
 
     public void printTalon() {
         SmartDashboard.putNumber(wheelName + " Talon", getAbsoluteEncoderValue());
     }
 
+    public void setEncoders(double offset) {
+        encoder.setPosition(offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096)*RobotConstants.swerveDriveGearRatio/4096.0);
+        SwerveModuleState state = new SwerveModuleState(0.000000000001, Rotation2d.fromDegrees(0));
+        this.drive(state.speedMetersPerSecond, state.angle.getDegrees());
+    }
+
     public double getAbsoluteEncoderValue() {
-        return ((absoluteEncoder.getPosition() % 4096)*RobotConstants.swerveDriveGearRatio/4096.0);
+        return ((absoluteEncoder.getSelectedSensorPosition(0) % 4096)*RobotConstants.swerveDriveGearRatio/4096.0);
     }
 
     public double angleMotorDiagnostic() {
         diagnostic = true;
-        this.drive(0, (absoluteEncoder.getPosition() * (360 / RobotConstants.swerveDriveGearRatio)) + 720);
-        return (offset + getAbsoluteEncoderValue()) * (360/RobotConstants.swerveDriveGearRatio) - (absoluteEncoder.getPosition() * (360 / RobotConstants.swerveDriveGearRatio));
+        this.drive(0, (encoder.getPosition() * (360 / RobotConstants.swerveDriveGearRatio)) + 720);
+        return (offset + getAbsoluteEncoderValue()) * (360/RobotConstants.swerveDriveGearRatio) - (encoder.getPosition() * (360 / RobotConstants.swerveDriveGearRatio));
     }
 }
