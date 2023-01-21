@@ -2,7 +2,7 @@ package frc.robot.swervedrive;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.revrobotics.AlternateEncoderType;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -12,8 +12,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.Robot;
+
 import frc.robot.RobotConstants;
+
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import frc.robot.wrappers.Wrapper;
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -22,8 +27,7 @@ public class Wheel{
     private CANSparkMax angleMotor;
     private CANSparkMax speedMotor;
     private SparkMaxPIDController pidController;
-    public final RelativeEncoder encoder;
-    private TalonSRX absoluteEncoder;
+    public final AbsoluteEncoder absoluteEncoder;
     
     //private ControlType controltype;
 
@@ -38,20 +42,19 @@ public class Wheel{
 
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
-    public Wheel (int angleMotorID, int speedMotorID, int absoluteEncoderID, String wheelName, double offset) {
+    public Wheel (int angleMotorID, int speedMotorID, String wheelName, double offset) {
         this.angleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
         this.speedMotor = new CANSparkMax(speedMotorID, MotorType.kBrushless);
-        this.absoluteEncoder = new TalonSRX(absoluteEncoderID);
+        this.absoluteEncoder = this.angleMotor.getAbsoluteEncoder(Type.kDutyCycle);
         this.offset = offset;
-
-        this.absoluteEncoder.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
         this.wheelName = wheelName;
         
         //angleMotor.restoreFactoryDefaults();
 
         pidController = angleMotor.getPIDController();
-        encoder = angleMotor.getEncoder();
+        pidController.setFeedbackDevice(absoluteEncoder);
+
         SmartDashboard.putNumber("Rotations", 0);
 
         kP = RobotConstants.kP; 
@@ -98,7 +101,7 @@ public class Wheel{
         if((d != kD)) { pidController.setD(d); kD = d; }
 
         
-        double processVariable = encoder.getPosition();
+        double processVariable = absoluteEncoder.getPosition();
         // SmartDashboard.putNumber("Output" + wheelName, angleMotor.getAppliedOutput());
 
         // SmartDashboard.putNumber("Angle Motor Current (Amps)" + wheelName, angleMotor.getOutputCurrent());
@@ -138,19 +141,13 @@ public class Wheel{
         SmartDashboard.putNumber(wheelName + " Talon", getAbsoluteEncoderValue());
     }
 
-    public void setEncoders(double offset) {
-        encoder.setPosition(offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096)*RobotConstants.swerveDriveGearRatio/4096.0);
-        SwerveModuleState state = new SwerveModuleState(0.000000000001, Rotation2d.fromDegrees(0)); //try changing this i dont know what the point of it was -neil
-        this.drive(state.speedMetersPerSecond, state.angle.getDegrees());
-    }
-
     public double getAbsoluteEncoderValue() {
-        return ((absoluteEncoder.getSelectedSensorPosition(0) % 4096)*RobotConstants.swerveDriveGearRatio/4096.0);
+        return ((absoluteEncoder.getPosition() % 4096)*RobotConstants.swerveDriveGearRatio/4096.0);
     }
 
     public double angleMotorDiagnostic() {
         diagnostic = true;
-        this.drive(0, (encoder.getPosition() * (360 / RobotConstants.swerveDriveGearRatio)) + 720);
-        return (offset + getAbsoluteEncoderValue()) * (360/RobotConstants.swerveDriveGearRatio) - (encoder.getPosition() * (360 / RobotConstants.swerveDriveGearRatio));
+        this.drive(0, (absoluteEncoder.getPosition() * (360 / RobotConstants.swerveDriveGearRatio)) + 720);
+        return (offset + getAbsoluteEncoderValue()) * (360/RobotConstants.swerveDriveGearRatio) - (absoluteEncoder.getPosition() * (360 / RobotConstants.swerveDriveGearRatio));
     }
 }

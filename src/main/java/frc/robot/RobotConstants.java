@@ -6,17 +6,12 @@ public class RobotConstants {
     public final static int frontLeftAngleID = 19;
     public final static int frontRightAngleID = 15;
     public final static int backLeftAngleID = 13;
-    public final static int backRightAngleID = 17;
+    public final static int backRightAngleID = 4;
     
     public final static int frontLeftSpeedID = 9;
     public final static int frontRightSpeedID = 5;
     public final static int backLeftSpeedID = 3;
     public final static int backRightSpeedID = 7;
-    
-    public final static int frontLeftAbsoluteEncoderID = 29;
-    public final static int frontRightAbsoluteEncoderID = 28;
-    public final static int backLeftAbsoluteEncoderID = 27;
-    public final static int backRightAbsoluteEncoderID = 23;
     
     public final static double frontLeftAngleOffset = -5;
     public final static double frontRightAngleOffset = 4.4;
@@ -42,13 +37,13 @@ public class RobotConstants {
     public final static double backRightXMeters = -0.273;
     public final static double backRightYMeters = -0.273;
 
-    public final static double swerveDriveGearRatio = 12.8;
+    public final static double swerveDriveGearRatio = 4096.0;//THING WE ARE TESTING!!!
 
-    public final static int intakeMotorID = 29;
-    public final static int rightElevatorMotorID = 36;
-    public final static int leftElevatorMotorID = 37;
-    public final static int leftDepositorMotorID = 27;
-    public final static int rightDepositorMotorID = 23;
+    // public final static int intakeMotorID = 29;
+    // public final static int rightElevatorMotorID = 36;
+    // public final static int leftElevatorMotorID = 37;
+    // public final static int leftDepositorMotorID = 27;
+    // public final static int rightDepositorMotorID = 23;
 
     public final static int intakeSolenoidForwardID = 10;
     public final static int intakeSolenoidReverseID = 11;

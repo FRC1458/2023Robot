@@ -12,8 +12,8 @@ public class SolenoidWrapper extends Wrapper {
 
     public SolenoidWrapper(int forwardID, int reverseID) {
         try{
-            solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, forwardID, reverseID);
-            isInitialized = true;
+            //solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, forwardID, reverseID);
+            //isInitialized = true;
         }
         catch (RuntimeException ex ) {
             DriverStation.reportError("Error Initiating Solenoid:  " + ex.getMessage(), true);

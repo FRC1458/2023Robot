@@ -9,8 +9,8 @@ public class CompressorWrapper extends Wrapper{
 
     public CompressorWrapper() {
         try{
-            compressor = new Compressor(1, PneumaticsModuleType.REVPH); // module id is 1, default for REV pneumatic hub
-            isInitialized = true;
+            //compressor = new Compressor(1, PneumaticsModuleType.REVPH); // module id is 1, default for REV pneumatic hub
+            //isInitialized = true;
         }
         catch (RuntimeException ex ) {
             DriverStation.reportError("Error Initiating Compressor:  " + ex.getMessage(), true);

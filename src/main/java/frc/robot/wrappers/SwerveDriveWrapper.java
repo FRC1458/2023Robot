@@ -25,8 +25,4 @@ public class SwerveDriveWrapper extends Wrapper{
         if (isInitialized) swervedrive.drive(x, y, r, fieldOriented);
     }
 
-    public void setEncoders() {
-        if (isInitialized) swervedrive.setEncoders();
-    }
-
 }
