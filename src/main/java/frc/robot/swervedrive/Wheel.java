@@ -45,6 +45,8 @@ public class Wheel{
     public Wheel (int angleMotorID, int speedMotorID, String wheelName, double offset) {
         this.angleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
         this.speedMotor = new CANSparkMax(speedMotorID, MotorType.kBrushless);
+        angleMotor.getEncoder();
+        speedMotor.getEncoder();
         this.absoluteEncoder = this.angleMotor.getAbsoluteEncoder(Type.kDutyCycle);
         this.offset = offset;
 
