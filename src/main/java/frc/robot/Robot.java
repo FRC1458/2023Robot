@@ -24,13 +24,13 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Timer;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.RobotConstants;
 import frc.robot.swervedrive.SwerveDrive;
 import frc.robot.swervedrive.Wheel;
 import frc.robot.wrappers.*;
-
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -279,7 +279,7 @@ public class Robot extends TimedRobot {
     else if (controllerType == 1) {
       xAxis = leftStick.getRawAxis(0);
       yAxis = leftStick.getRawAxis(1);
-      rAxis = leftStick.getRawAxis(3);
+      rAxis = leftStick.getRawAxis(3); //turning
       depositButton = leftStick.getRawButton(0);
       elevatorUpButton = leftStick.getRawButton(1);
       climbButton = leftStick.getRawButton(2);
