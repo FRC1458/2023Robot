@@ -84,9 +84,9 @@ public class SwerveDrive {
         //pose = odometry.update(gyroAngle, moduleStates[0], moduleStates[1], moduleStates[2], moduleStates[3]);
 
         frontLeft.drive(states[2].speedMetersPerSecond, states[2].angle.getDegrees());
-        frontRight.drive(states[0].speedMetersPerSecond, states[0].angle.getDegrees());
-        backLeft.drive(states[3].speedMetersPerSecond, states[3].angle.getDegrees());
-        backRight.drive(states[1].speedMetersPerSecond, states[1].angle.getDegrees());
+        //frontRight.drive(states[0].speedMetersPerSecond, states[0].angle.getDegrees());
+        //backLeft.drive(states[3].speedMetersPerSecond, states[3].angle.getDegrees());
+        //backRight.drive(states[1].speedMetersPerSecond, states[1].angle.getDegrees());
 
         SmartDashboard.putNumber("Back Left goal angle", states[3].angle.getDegrees());
         SmartDashboard.putNumber("Back Left actual angle", backLeft.absoluteEncoder.getPosition() * (360 / RobotConstants.swerveDriveGearRatio) % 360);

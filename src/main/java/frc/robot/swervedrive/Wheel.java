@@ -46,16 +46,24 @@ public class Wheel{
         this.angleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
         this.speedMotor = new CANSparkMax(speedMotorID, MotorType.kBrushless);
         this.absoluteEncoder = this.angleMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        angleMotor.getEncoder();
         this.offset = offset;
 
         this.wheelName = wheelName;
         
-        //angleMotor.restoreFactoryDefaults();
+        speedMotor.restoreFactoryDefaults();
+        angleMotor.restoreFactoryDefaults();
 
         pidController = angleMotor.getPIDController();
-        pidController.setFeedbackDevice(absoluteEncoder);
+        //pidController.setFeedbackDevice(absoluteEncoder);
 
         SmartDashboard.putNumber("Rotations", 0);
+
+        angleMotor.restoreFactoryDefaults();
+        speedMotor.restoreFactoryDefaults();
+
+        absoluteEncoder.setPositionConversionFactor(2*Math.PI);
+        absoluteEncoder.setVelocityConversionFactor(2*Math.PI/60);
 
         kP = RobotConstants.kP; 
         kI = RobotConstants.kI;
@@ -83,6 +91,9 @@ public class Wheel{
         SmartDashboard.putNumber("P Gain", kP);
         SmartDashboard.putNumber("I Gain", kI);
         SmartDashboard.putNumber("D Gain", kD);
+
+        angleMotor.burnFlash();
+        speedMotor.burnFlash();
     }
 
     public void drive (double speed, double angle) {
@@ -102,9 +113,11 @@ public class Wheel{
 
         
         double processVariable = absoluteEncoder.getPosition();
+        SmartDashboard.putNumber("ProccessVariable" + wheelName, processVariable);
+
         // SmartDashboard.putNumber("Output" + wheelName, angleMotor.getAppliedOutput());
 
-        // SmartDashboard.putNumber("Angle Motor Current (Amps)" + wheelName, angleMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Angle Motor Current (Amps)" + wheelName, angleMotor.getOutputCurrent());
         // SmartDashboard.putNumber("Speed Motor Current (Amps)", speedMotor.getOutputCurrent());
 
         
@@ -132,9 +145,9 @@ public class Wheel{
         // rotations = SmartDashboard.getNumber("Rotations", 0);
 
         if (speed != 0 || diagnostic){
-            pidController.setReference(realGoalRotations, CANSparkMax.ControlType.kPosition);
+            //pidController.setReference(realGoalRotations, CANSparkMax.ControlType.kPosition);
         }
-        speedMotor.set(speed);
+        //speedMotor.set(speed);
     }
 
     public void printTalon() {
