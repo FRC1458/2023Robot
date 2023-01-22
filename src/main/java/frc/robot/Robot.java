@@ -225,6 +225,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     // ballCamera = new CameraWrapper(true);
     swerveDrive.resetNavX();
+    swerveDrive.setEncoders();
   }
 
 
@@ -285,7 +286,7 @@ public class Robot extends TimedRobot {
       climbButton = leftStick.getRawButton(2);
       elevatorDownButton = leftStick.getRawButton(3);
       speedIncreaseButton = rightStick.getRawButton(7);
-      resetNavX = rightStick.getRawButton(4); //Navx Reset coded already -Taven
+      resetNavX = rightStick.getRawButton(4);
     }
     else {
       xAxis = 0;
@@ -299,7 +300,7 @@ public class Robot extends TimedRobot {
 
     if (resetNavX) {
       swerveDrive.resetNavX();
-
+      swerveDrive.setEncoders();
     }
 
     double x,y,r,speedIncrease;
@@ -316,7 +317,7 @@ public class Robot extends TimedRobot {
       fieldOriented = !fieldOriented;
     }
 
-    swerveDrive.drive(x, y, r, false);
+    swerveDrive.drive(x, y, r, true);
   }
 
   
@@ -327,6 +328,7 @@ public class Robot extends TimedRobot {
     engagedElevator = true;
     elevatorState = ElevatorStates.STOP;
     swerveDrive.resetNavX();
+    swerveDrive.setEncoders();
   }
 
   @Override
