@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
     DROP_BALL,
     AIM,
     SHOOT,
-    GO_TO_HUMAN;
+    GO_TO_HUMAN; 
 
 
   }
