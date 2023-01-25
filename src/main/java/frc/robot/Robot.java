@@ -240,7 +240,6 @@ public class Robot extends TimedRobot {
     //SET TO 1 FOR EVERYTHING ELSE
 
     controllerType = 0;
-    isFieldOriented = false;
 
     //Controllers
     if (controllerType == 0) {
@@ -252,41 +251,41 @@ public class Robot extends TimedRobot {
       //elevatorDepositButton = xboxController.getBButton();
       //climbButton = xboxController.getXButton();
       //elevatorClimbButton = xboxController.getYButton();
-      //intakeButton = xboxController.getRightBumper() && !xboxController.getLeftBumper() && !elevTop;
-      //intakeReverseButton = (xboxController.getRightTriggerAxis() > 0.7);
-      //intakeForwardButton = (xboxController.getLeftTriggerAxis() > 0.7) && !xboxController.getRightBumper();
+      intakeButton = xboxController.getRightBumper() && !xboxController.getLeftBumper() && !elevTop;
+      intakeReverseButton = (xboxController.getRightTriggerAxis() > 0.7);
+      intakeForwardButton = (xboxController.getLeftTriggerAxis() > 0.7) && !xboxController.getRightBumper();
       
-      //depositButton = xboxController.getLeftBumper() && !xboxController.getRightBumper() && !elevTop;
+      depositButton = xboxController.getLeftBumper() && !xboxController.getRightBumper() && !elevTop;
 
       // dropBall = xboxController.getRightBumper();
-      //resetNavX = xboxController.getStartButton();
+      resetNavX = xboxController.getStartButton();
       //speedIncreaseButton = xboxController.getRightTriggerAxis() > 0.7;
 
-      //elevTop = (xboxController.getPOV() == 0) && xboxController.getStartButton() && xboxController.getLeftBumper();
-      //elevMiddle = (xboxController.getPOV() == 0);
-      //elevBottom = (xboxController.getPOV() == 180);
+      elevTop = (xboxController.getPOV() == 0) && xboxController.getStartButton() && xboxController.getLeftBumper();
+      elevMiddle = (xboxController.getPOV() == 0);
+      elevBottom = (xboxController.getPOV() == 180);
       
 
-      //elevSolenoidEngageButton = xboxController.getXButton();
-      //elevSolenoidDisengageButton = xboxController.getYButton();
+      elevSolenoidEngageButton = xboxController.getXButton();
+      elevSolenoidDisengageButton = xboxController.getYButton();
 
-      //intakeSolenoidButton = xboxController.getBButton();
+      intakeSolenoidButton = xboxController.getBButton();
 
-      //stopElevatorButton = xboxController.getAButton();
+      stopElevatorButton = xboxController.getAButton();
 
-      //elevatorManualUp = xboxController.getPOV() == 90;
-      //elevatorManualDown = xboxController.getPOV() == 270;
+      elevatorManualUp = xboxController.getPOV() == 90;
+      elevatorManualDown = xboxController.getPOV() == 270;
     }
     else if (controllerType == 1) {
       xAxis = leftStick.getRawAxis(0);
       yAxis = leftStick.getRawAxis(1);
       rAxis = leftStick.getRawAxis(3);
-      //depositButton = leftStick.getRawButton(0);
-      //elevatorUpButton = leftStick.getRawButton(1);
-      //climbButton = leftStick.getRawButton(2);
-      //elevatorDownButton = leftStick.getRawButton(3);
-      //speedIncreaseButton = rightStick.getRawButton(7);
-      //resetNavX = rightStick.getRawButton(4); //Navx Reset coded already -Taven
+      depositButton = leftStick.getRawButton(0);
+      elevatorUpButton = leftStick.getRawButton(1);
+      climbButton = leftStick.getRawButton(2);
+      elevatorDownButton = leftStick.getRawButton(3);
+      speedIncreaseButton = rightStick.getRawButton(7);
+      resetNavX = rightStick.getRawButton(4); //Navx Reset coded already -Taven
     }
     else {
       xAxis = 0;
@@ -309,7 +308,6 @@ public class Robot extends TimedRobot {
     // if(speedIncreaseButton){
     //   speedIncrease = boostedSpeed;
     // }
-    
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
     y= Math.abs(yAxis)*yAxis * speedIncrease;
     r= Math.abs(rAxis)*rAxis * speedIncrease;
@@ -318,7 +316,7 @@ public class Robot extends TimedRobot {
       fieldOriented = !fieldOriented;
     }
 
-    swerveDrive.drive(x, y, r, isFieldOriented);
+    swerveDrive.drive(x, y, r, false);
   }
 
   
