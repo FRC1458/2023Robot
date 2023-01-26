@@ -13,10 +13,10 @@ public class RobotConstants {
     public final static int backLeftSpeedID = 3;
     public final static int backRightSpeedID = 7;
     
-    public final static double frontLeftAngleOffset = -5; //negative
-    public final static double frontRightAngleOffset = 4.4; //positive
-    public final static double backLeftAngleOffset = 0.4; //0.4
-    public final static double backRightAngleOffset = 0; //0
+    public final static double frontLeftAngleOffset = -5;
+    public final static double frontRightAngleOffset = 4.4;
+    public final static double backLeftAngleOffset = 0.4;
+    public final static double backRightAngleOffset = 0;
 
     public final static double alphaX = 1;
     public final static double betaY = 1;
@@ -37,7 +37,7 @@ public class RobotConstants {
     public final static double backRightXMeters = -0.273;
     public final static double backRightYMeters = -0.273;
 
-    public final static double swerveDriveGearRatio = 12.8;
+    public final static double swerveDriveGearRatio = 12.8;//THING WE ARE TESTING!!!
 
     // public final static int intakeMotorID = 29;
     // public final static int rightElevatorMotorID = 36;
