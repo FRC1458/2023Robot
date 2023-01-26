@@ -55,7 +55,7 @@ public class SwerveDrive {
 
         speeds = new ChassisSpeeds();
 
-        //ahrs = new AHRS(SPI.Port.kMXP); //REMEM
+        ahrs = new AHRS(SPI.Port.kMXP); //REMEM
     }
 
     public void drive(double x, double y, double r, boolean fieldOriented) {
@@ -64,9 +64,9 @@ public class SwerveDrive {
         speeds.omegaRadiansPerSecond = r;
 
         if (fieldOriented) {
-            //speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, Rotation2d.fromDegrees(-(ahrs.getYaw())));
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, Rotation2d.fromDegrees(-(ahrs.getYaw())));
         }
-        //SmartDashboard.putNumber("angle from navx", ahrs.getYaw());
+        SmartDashboard.putNumber("angle from navx", ahrs.getYaw());
 
         SmartDashboard.putNumber("X", x);
         SmartDashboard.putNumber("Y", y);
@@ -95,7 +95,7 @@ public class SwerveDrive {
 
     public double turnToAngle(double goalAngle) {
         double error = 1;
-        double currentAngle = 0;//ahrs.getYaw();
+        double currentAngle = ahrs.getYaw();
 
         double diff = (currentAngle - goalAngle) % 360;
 
@@ -138,6 +138,6 @@ public class SwerveDrive {
 
     }
     public void resetNavX () {
-        //ahrs.reset();
+        ahrs.reset();
     }
 }
