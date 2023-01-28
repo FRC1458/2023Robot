@@ -30,7 +30,8 @@ import frc.robot.RobotConstants;
 import frc.robot.swervedrive.SwerveDrive;
 import frc.robot.swervedrive.Wheel;
 import frc.robot.wrappers.*;
-
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -165,13 +166,20 @@ public class Robot extends TimedRobot {
   private boolean AUTO_taxi = false;
   private boolean AUTO_depositorDone = false;
 
+<<<<<<< Updated upstream
 
+=======
+  private final Balancer balancer;
+
+  private final AHRS navX;
+>>>>>>> Stashed changes
 
 
   boolean turnTo = false;
 
   public Robot() {
     super(0.03);
+    navX = new AHRS(SPI.Port.kMXP);
     //create variables
     leftStick = new JoystickWrapper(0);
     rightStick = new JoystickWrapper(1);
@@ -180,7 +188,12 @@ public class Robot extends TimedRobot {
     //bottomCam = new Camera();
     //Ball = new Ball();
     state = States.MANUAL;
+<<<<<<< Updated upstream
     swerveDrive = new SwerveDrive();
+=======
+    swerveDrive = new SwerveDrive(navX);
+    balancer = new Balancer(swerveDrive);
+>>>>>>> Stashed changes
     // ballCamera = new CameraWrapper(true);
 
     //navx = new NavX();

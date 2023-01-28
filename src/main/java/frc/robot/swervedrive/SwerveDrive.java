@@ -25,10 +25,10 @@ public class SwerveDrive {
     SwerveDriveKinematics kinematics;
     SwerveDriveOdometry odometry;
     Pose2d pose;
-    AHRS ahrs;
-    //ahrs = new AHRS(NavX, kProcessedData, 50);
-
-    public SwerveDrive() {
+    private final AHRS navX;
+    
+    public SwerveDrive(AHRS navX) {
+        this.navX = navX;
         frontLeft = new Wheel(RobotConstants.frontLeftAngleID, RobotConstants.frontLeftSpeedID, RobotConstants.frontLeftAbsoluteEncoderID, "Front Left (1)", RobotConstants.frontLeftAngleOffset);
         frontRight = new Wheel(RobotConstants.frontRightAngleID, RobotConstants.frontRightSpeedID, RobotConstants.frontRightAbsoluteEncoderID, "Front Right (2)", RobotConstants.frontRightAngleOffset);
         backLeft = new Wheel(RobotConstants.backLeftAngleID, RobotConstants.backLeftSpeedID, RobotConstants.backLeftAbsoluteEncoderID, "Back Left (3)", RobotConstants.backLeftAngleOffset);
@@ -55,7 +55,7 @@ public class SwerveDrive {
 
         speeds = new ChassisSpeeds();
 
-        ahrs = new AHRS(SPI.Port.kMXP); //REMEM
+    
     }
 
     public void drive(double x, double y, double r, boolean fieldOriented) {
@@ -64,14 +64,19 @@ public class SwerveDrive {
         speeds.omegaRadiansPerSecond = r;
 
         if (fieldOriented) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, Rotation2d.fromDegrees(-(ahrs.getYaw())));
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, Rotation2d.fromDegrees(-(navX.getYaw())));
         }
-        SmartDashboard.putNumber("angle from navx", ahrs.getYaw());
+        SmartDashboard.putNumber("angle from navx", navX.getYaw());
 
         SmartDashboard.putNumber("X", x);
         SmartDashboard.putNumber("Y", y);
         SmartDashboard.putNumber("R", r);
+<<<<<<< Updated upstream
         //SmartDashboard.putNumber("Robot Angle", ahrs.getYaw());
+=======
+        SmartDashboard.putNumber("Robot Angle", navX.getYaw());
+        SmartDashboard.putNumber("Robot Angle (pitch)", navX.getPitch());
+>>>>>>> Stashed changes
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
 
@@ -95,7 +100,11 @@ public class SwerveDrive {
 
     public double turnToAngle(double goalAngle) {
         double error = 1;
+<<<<<<< Updated upstream
         double currentAngle = 0;//ahrs.getYaw();
+=======
+        double currentAngle = navX.getYaw();
+>>>>>>> Stashed changes
 
         double diff = (currentAngle - goalAngle) % 360;
 
@@ -126,6 +135,10 @@ public class SwerveDrive {
 
     }
     public void resetNavX () {
+<<<<<<< Updated upstream
         //ahrs.reset();
+=======
+        navX.reset();
+>>>>>>> Stashed changes
     }
 }

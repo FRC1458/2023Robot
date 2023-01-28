@@ -2,6 +2,8 @@ package frc.robot.wrappers;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.swervedrive.SwerveDrive;
+import com.kauailabs.navx.frc.AHRS;
+
 
 
 import frc.robot.*;
@@ -10,9 +12,9 @@ public class SwerveDriveWrapper extends Wrapper{
    
     public SwerveDrive swervedrive;
 
-    public SwerveDriveWrapper () {
+    public SwerveDriveWrapper (AHRS navx) {
         try{
-            swervedrive = new SwerveDrive() ;
+            swervedrive = new SwerveDrive(navx) ;
             isInitialized = true;
         }
         catch (RuntimeException ex ){
