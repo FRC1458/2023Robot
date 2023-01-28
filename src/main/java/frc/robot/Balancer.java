@@ -83,7 +83,6 @@ public class Balancer {
     private void forward() {
         swerve.drive(0, -0.4, 0, true);
         switchState(1, States.STOP);
-        
     }
 
     private void stop() {

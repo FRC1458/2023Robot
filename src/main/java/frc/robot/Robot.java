@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
     DROP_BALL,
     AIM,
     SHOOT,
-    GO_TO_HUMAN;
+    GO_TO_HUMAN; 
 
 
   }
@@ -157,23 +157,12 @@ public class Robot extends TimedRobot {
 
   private boolean middleBool = false;
 
-  private Timer middleTimer;
-
-  private Timer AUTO_totalTimer;
-  private Timer AUTO_depositTimer;
-  private Timer AUTO_taxiTimer;
-
   private boolean AUTO_taxi = false;
   private boolean AUTO_depositorDone = false;
 
-<<<<<<< Updated upstream
-
-=======
   private final Balancer balancer;
 
   private final AHRS navX;
->>>>>>> Stashed changes
-
 
   boolean turnTo = false;
 
@@ -188,12 +177,9 @@ public class Robot extends TimedRobot {
     //bottomCam = new Camera();
     //Ball = new Ball();
     state = States.MANUAL;
-<<<<<<< Updated upstream
-    swerveDrive = new SwerveDrive();
-=======
+
     swerveDrive = new SwerveDrive(navX);
     balancer = new Balancer(swerveDrive);
->>>>>>> Stashed changes
     // ballCamera = new CameraWrapper(true);
 
     //navx = new NavX();
@@ -215,10 +201,7 @@ public class Robot extends TimedRobot {
 
     fieldOriented = RobotConstants.fieldOriented;
 
-    middleTimer = new Timer();
-    AUTO_taxiTimer = new Timer();
-    AUTO_totalTimer = new Timer();
-    AUTO_depositTimer = new Timer();
+
   }
 
 
@@ -336,24 +319,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    elevatorSolenoid.set(true);
-    engagedElevator = true;
-    elevatorState = ElevatorStates.STOP;
     swerveDrive.resetNavX();
   }
 
   @Override
   public void autonomousPeriodic() {
-    AUTO_totalTimer.start();
-
-    if (AUTO_taxi && AUTO_taxiTimer.get() < 2) {
-      swerveDrive.drive(0, 0.3, 0, false);
-    }
-
-    if (AUTO_taxiTimer.get() >= 2) {
-      swerveDrive.drive(0, 0, 0, false);
-      AUTO_taxi = false;
-      AUTO_taxiTimer.stop();
-    }
+    balancer.balance();
   }
 }
