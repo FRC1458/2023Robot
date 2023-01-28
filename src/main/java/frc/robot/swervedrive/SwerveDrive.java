@@ -71,17 +71,8 @@ public class SwerveDrive {
         SmartDashboard.putNumber("X", x);
         SmartDashboard.putNumber("Y", y);
         SmartDashboard.putNumber("R", r);
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-        //SmartDashboard.putNumber("Robot Angle", ahrs.getYaw());
-=======
         SmartDashboard.putNumber("Robot Angle", navX.getYaw());
         SmartDashboard.putNumber("Robot Angle (pitch)", navX.getPitch());
->>>>>>> Stashed changes
-=======
-        SmartDashboard.putNumber("Robot Angle", ahrs.getYaw());
-        SmartDashboard.putNumber("Robot Angle (pitch)", ahrs.getPitch());
->>>>>>> 865c097962a812294405287926f5c9eaf2ae2b31
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
 
@@ -105,15 +96,7 @@ public class SwerveDrive {
 
     public double turnToAngle(double goalAngle) {
         double error = 1;
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-        double currentAngle = 0;//ahrs.getYaw();
-=======
         double currentAngle = navX.getYaw();
->>>>>>> Stashed changes
-=======
-        double currentAngle = ahrs.getYaw();
->>>>>>> 865c097962a812294405287926f5c9eaf2ae2b31
 
         double diff = (currentAngle - goalAngle) % 360;
 
@@ -144,14 +127,6 @@ public class SwerveDrive {
 
     }
     public void resetNavX () {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-        //ahrs.reset();
-=======
         navX.reset();
->>>>>>> Stashed changes
-=======
-        ahrs.reset();
->>>>>>> 865c097962a812294405287926f5c9eaf2ae2b31
     }
 }

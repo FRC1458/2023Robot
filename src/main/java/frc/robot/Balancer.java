@@ -43,12 +43,14 @@ public class Balancer {
 
     private final SwerveDrive swerve;
     private final Timer timer;
+    private final AHRS navX;
 
     private States state = States.START;
 
-    public Balancer(SwerveDrive swerve) {
+    public Balancer(SwerveDrive swerve, AHRS navX) {
         this.swerve = swerve;
         timer = new Timer();
+        this.navX = navX;
     }
 
     public boolean balance() {
@@ -81,8 +83,11 @@ public class Balancer {
     }
 
     private void forward() {
+        if (navX.getPitch() > 10) {
+            state = States.STOP;
+        }
         swerve.drive(0, -0.4, 0, true);
-        switchState(1, States.STOP);
+        switchState(3, States.STOP);
     }
 
     private void stop() {

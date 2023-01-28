@@ -179,7 +179,7 @@ public class Robot extends TimedRobot {
     state = States.MANUAL;
 
     swerveDrive = new SwerveDrive(navX);
-    balancer = new Balancer(swerveDrive);
+    balancer = new Balancer(swerveDrive, navX);
     // ballCamera = new CameraWrapper(true);
 
     //navx = new NavX();
