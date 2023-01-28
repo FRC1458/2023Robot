@@ -71,7 +71,8 @@ public class SwerveDrive {
         SmartDashboard.putNumber("X", x);
         SmartDashboard.putNumber("Y", y);
         SmartDashboard.putNumber("R", r);
-        //SmartDashboard.putNumber("Robot Angle", ahrs.getYaw());
+        SmartDashboard.putNumber("Robot Angle", ahrs.getYaw());
+        SmartDashboard.putNumber("Robot Angle (pitch)", ahrs.getPitch());
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
 
