@@ -1,0 +1,195 @@
+diff --git a/src/main/java/frc/robot/Balancer.java b/src/main/java/frc/robot/Balancer.java
+index 74fe125..231bbb0 100644
+--- a/src/main/java/frc/robot/Balancer.java
++++ b/src/main/java/frc/robot/Balancer.java
+@@ -27,6 +27,7 @@ import frc.robot.swervedrive.SwerveDrive;
+ import frc.robot.swervedrive.Wheel;
+ import frc.robot.wrappers.*;
+ 
++import com.kauailabs.navx.frc.AHRS;
+ 
+ import com.ctre.phoenix.motorcontrol.ControlMode;
+ 
+@@ -36,16 +37,19 @@ public class Balancer {
+         START,
+         ORIENT,
+         FORWARD,
++        LOCK,
+         STOP
+     }
+ 
+     private final SwerveDrive swerve;
+     private final Timer timer;
++    private AHRS navx;
+ 
+     private States state = States.START;
+ 
+-    public Balancer(SwerveDrive swerve) {
++    public Balancer(SwerveDrive swerve, AHRS navx) {
+         this.swerve = swerve;
++        this.navx = navx;
+         timer = new Timer();
+     }
+ 
+@@ -60,6 +64,9 @@ public class Balancer {
+             case FORWARD:
+                 forward();
+                 break;
++            case LOCK:
++                lock();
++                break;
+             case STOP:
+                 stop();
+                 break;
+@@ -79,8 +86,18 @@ public class Balancer {
+     }
+ 
+     private void forward() {
+-        swerve.drive(0, -0.4, 0, true);
+-        switchState(1, States.STOP);
++        swerve.drive(0, -0.2, 0, true);//change to -.4
++        if (navx.getPitch() < -10) {//make absolute value later
++            //state = States.STOP;
++            switchState(3.5, States.LOCK);
++            return;
++        }
++        switchState(10, States.LOCK);
++    }
++
++    private void lock() {
++        swerve.drive(0.01, 0, 0, true);
++        switchState(0.5, States.STOP);
+     }
+ 
+     private void stop() {
+diff --git a/src/main/java/frc/robot/Robot.java b/src/main/java/frc/robot/Robot.java
+index 54ca23e..ac50418 100644
+--- a/src/main/java/frc/robot/Robot.java
++++ b/src/main/java/frc/robot/Robot.java
+@@ -31,6 +31,8 @@ import frc.robot.swervedrive.SwerveDrive;
+ import frc.robot.swervedrive.Wheel;
+ import frc.robot.wrappers.*;
+ 
++import com.kauailabs.navx.frc.AHRS;
++import edu.wpi.first.wpilibj.SPI; //needed to initialize navx
+ 
+ import com.ctre.phoenix.motorcontrol.ControlMode;
+ 
+@@ -160,7 +162,7 @@ public class Robot extends TimedRobot {
+   private boolean AUTO_depositorDone = false;
+ 
+   private final Balancer balancer;
+-
++  private AHRS navx;
+ 
+ 
+ 
+@@ -176,8 +178,9 @@ public class Robot extends TimedRobot {
+     //bottomCam = new Camera();
+     //Ball = new Ball();
+     state = States.MANUAL;
+-    swerveDrive = new SwerveDrive();
+-    balancer = new Balancer(swerveDrive);
++    navx = new AHRS(SPI.Port.kMXP);
++    swerveDrive = new SwerveDrive(navx);
++    balancer = new Balancer(swerveDrive, navx);
+     // ballCamera = new CameraWrapper(true);
+ 
+     //navx = new NavX();
+diff --git a/src/main/java/frc/robot/swervedrive/SwerveDrive.java b/src/main/java/frc/robot/swervedrive/SwerveDrive.java
+index b08e368..9fbf64c 100644
+--- a/src/main/java/frc/robot/swervedrive/SwerveDrive.java
++++ b/src/main/java/frc/robot/swervedrive/SwerveDrive.java
+@@ -10,7 +10,6 @@ import frc.robot.RobotConstants;
+ import edu.wpi.first.math.geometry.Translation2d;
+ import edu.wpi.first.math.geometry.Pose2d;
+ import edu.wpi.first.math.geometry.Rotation2d;
+-import edu.wpi.first.wpilibj.SPI;
+ import com.kauailabs.navx.frc.AHRS;
+ 
+ import frc.robot.wrappers.*;
+@@ -25,10 +24,11 @@ public class SwerveDrive {
+     SwerveDriveKinematics kinematics;
+     SwerveDriveOdometry odometry;
+     Pose2d pose;
+-    AHRS ahrs;
++    private AHRS navx;
+     //ahrs = new AHRS(NavX, kProcessedData, 50);
+ 
+-    public SwerveDrive() {
++    public SwerveDrive(AHRS navx) {
++        this.navx = navx;
+         frontLeft = new Wheel(RobotConstants.frontLeftAngleID, RobotConstants.frontLeftSpeedID, RobotConstants.frontLeftAbsoluteEncoderID, "Front Left (1)", RobotConstants.frontLeftAngleOffset);
+         frontRight = new Wheel(RobotConstants.frontRightAngleID, RobotConstants.frontRightSpeedID, RobotConstants.frontRightAbsoluteEncoderID, "Front Right (2)", RobotConstants.frontRightAngleOffset);
+         backLeft = new Wheel(RobotConstants.backLeftAngleID, RobotConstants.backLeftSpeedID, RobotConstants.backLeftAbsoluteEncoderID, "Back Left (3)", RobotConstants.backLeftAngleOffset);
+@@ -54,8 +54,6 @@ public class SwerveDrive {
+         odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(), positions, new Pose2d(5.0, 13.5, new Rotation2d()));
+ 
+         speeds = new ChassisSpeeds();
+-
+-        ahrs = new AHRS(SPI.Port.kMXP); //REMEM
+     }
+ 
+     public void drive(double x, double y, double r, boolean fieldOriented) {
+@@ -64,15 +62,15 @@ public class SwerveDrive {
+         speeds.omegaRadiansPerSecond = r;
+ 
+         if (fieldOriented) {
+-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, Rotation2d.fromDegrees(-(ahrs.getYaw())));
++            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, Rotation2d.fromDegrees(-(navx.getYaw())));
+         }
+-        SmartDashboard.putNumber("angle from navx", ahrs.getYaw());
++        SmartDashboard.putNumber("angle from navx", navx.getYaw());
+ 
+         SmartDashboard.putNumber("X", x);
+         SmartDashboard.putNumber("Y", y);
+         SmartDashboard.putNumber("R", r);
+-        SmartDashboard.putNumber("Robot Angle", ahrs.getYaw());
+-        SmartDashboard.putNumber("Robot Angle (pitch)", ahrs.getPitch());
++        SmartDashboard.putNumber("Robot Angle", navx.getYaw());
++        SmartDashboard.putNumber("Robot Angle (pitch)", navx.getPitch());
+ 
+         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+ 
+@@ -96,7 +94,7 @@ public class SwerveDrive {
+ 
+     public double turnToAngle(double goalAngle) {
+         double error = 1;
+-        double currentAngle = ahrs.getYaw();
++        double currentAngle = navx.getYaw();
+ 
+         double diff = (currentAngle - goalAngle) % 360;
+ 
+@@ -139,6 +137,6 @@ public class SwerveDrive {
+ 
+     }
+     public void resetNavX () {
+-        ahrs.reset();
++        navx.reset();
+     }
+ }
+\ No newline at end of file
+diff --git a/src/main/java/frc/robot/wrappers/SwerveDriveWrapper.java b/src/main/java/frc/robot/wrappers/SwerveDriveWrapper.java
+index 6b9ac5d..cab637d 100644
+--- a/src/main/java/frc/robot/wrappers/SwerveDriveWrapper.java
++++ b/src/main/java/frc/robot/wrappers/SwerveDriveWrapper.java
+@@ -3,6 +3,7 @@ package frc.robot.wrappers;
+ import edu.wpi.first.wpilibj.DriverStation;
+ import frc.robot.swervedrive.SwerveDrive;
+ 
++import com.kauailabs.navx.frc.AHRS;
+ 
+ import frc.robot.*;
+ 
+@@ -10,9 +11,9 @@ public class SwerveDriveWrapper extends Wrapper{
+    
+     public SwerveDrive swervedrive;
+ 
+-    public SwerveDriveWrapper () {
++    public SwerveDriveWrapper (AHRS navx) {
+         try{
+-            swervedrive = new SwerveDrive() ;
++            swervedrive = new SwerveDrive(navx) ;
+             isInitialized = true;
+         }
+         catch (RuntimeException ex ){

@@ -38,19 +38,20 @@ public class Balancer {
         START,
         ORIENT,
         FORWARD,
+        LOCK,
         STOP
     }
 
     private final SwerveDrive swerve;
     private final Timer timer;
-    private final AHRS navX;
+    private final AHRS navx;
 
     private States state = States.START;
 
-    public Balancer(SwerveDrive swerve, AHRS navX) {
+    public Balancer(SwerveDrive swerve, AHRS navx) {
         this.swerve = swerve;
         timer = new Timer();
-        this.navX = navX;
+        this.navx = navx;
     }
 
     public boolean balance() {
@@ -63,6 +64,9 @@ public class Balancer {
                 break;
             case FORWARD:
                 forward();
+                break;
+            case LOCK:
+                lock();
                 break;
             case STOP:
                 stop();
@@ -83,11 +87,17 @@ public class Balancer {
     }
 
     private void forward() {
-        if (navX.getPitch() > 10) {
-            state = States.STOP;
+        swerve.drive(0, -0.2, 0, true);
+        if (navx.getPitch() < -10) {
+            switchState(3.5, States.LOCK);
+            return;
         }
-        swerve.drive(0, -0.4, 0, true);
-        switchState(3, States.STOP);
+        switchState(10, States.STOP);
+    }
+
+    private void lock() {
+        swerve.drive(0.01, 0, 0, true);
+        switchState(0.5, States.STOP);
     }
 
     private void stop() {

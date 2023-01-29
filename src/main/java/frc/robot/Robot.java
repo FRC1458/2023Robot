@@ -30,8 +30,9 @@ import frc.robot.RobotConstants;
 import frc.robot.swervedrive.SwerveDrive;
 import frc.robot.swervedrive.Wheel;
 import frc.robot.wrappers.*;
+
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SPI; //needed to initialize navx
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -168,7 +169,6 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     super(0.03);
-    navX = new AHRS(SPI.Port.kMXP);
     //create variables
     leftStick = new JoystickWrapper(0);
     rightStick = new JoystickWrapper(1);
@@ -178,6 +178,7 @@ public class Robot extends TimedRobot {
     //Ball = new Ball();
     state = States.MANUAL;
 
+    navX = new AHRS(SPI.Port.kMXP);
     swerveDrive = new SwerveDrive(navX);
     balancer = new Balancer(swerveDrive, navX);
     // ballCamera = new CameraWrapper(true);
