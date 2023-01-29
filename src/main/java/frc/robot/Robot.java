@@ -314,7 +314,7 @@ public class Robot extends TimedRobot {
       fieldOriented = !fieldOriented;
     }
 
-    swerveDrive.drive(x, y, r, false);
+    swerveDrive.drive(x, y, r, true);
   }
 
   
