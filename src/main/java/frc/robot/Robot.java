@@ -221,8 +221,10 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     // ballCamera = new CameraWrapper(true);
     swerveDrive.resetNavX();
+    swerveDrive.setEncoders();
   }
 
+-
 
   @Override
   public void teleopPeriodic() {
@@ -295,7 +297,7 @@ public class Robot extends TimedRobot {
 
     if (resetNavX) {
       swerveDrive.resetNavX();
-
+      swerveDrive.setEncoders();
     }
 
     double x,y,r,speedIncrease;
@@ -320,6 +322,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     swerveDrive.resetNavX();
+    swerveDrive.setEncoders();
   }
 
   @Override
