@@ -38,6 +38,7 @@ public class Balancer {
         START,
         ORIENT,
         FORWARD,
+        TUNING,
         LOCK,
         STOP
     }
@@ -65,6 +66,9 @@ public class Balancer {
             case FORWARD:
                 forward();
                 break;
+            case TUNING:
+                tuning();
+                break;
             case LOCK:
                 lock();
                 break;
@@ -85,14 +89,45 @@ public class Balancer {
         swerve.drive(0, -0.01, 0, true);
         switchState(0.5, States.FORWARD);
     }
-
+    private boolean b = true;
     private void forward() {
-        swerve.drive(0, -0.2, 0, true);
-        if (navx.getPitch() < -10) {
-            switchState(3.5, States.LOCK);
+        swerve.drive(0, -0.2, 0, true);//-.2 TRY 
+        if (navx.getPitch() < -10) {//-10
+            if (b) {
+                timer.reset();
+                timer.start();
+                b = false;
+            }
+            switchState(2, States.TUNING);//2
             return;
         }
-        switchState(10, States.STOP);
+        switchState(10, States.TUNING);//10
+    }
+
+    public boolean c = true;
+    private void tuning() {
+        
+        if (navx.getPitch() < -5) {
+            swerve.drive(0, -0.05, 0, true); //-0.05
+        }
+        else if (navx.getPitch() < -4) {
+            swerve.drive(0, -0.025, 0, true); //-0.025
+        }
+        else if (navx.getPitch() > 5) {
+            swerve.drive(0, 0.05, 0, true); //0.05
+        }
+        else if (navx.getPitch() > 4) {
+            swerve.drive(0, 0.025, 0, true); //0.025
+        }
+        else {
+            if (c) {
+                timer.reset();
+                timer.start();
+                c = false;
+            }
+            swerve.drive(0, 0.005, 0, true);
+            switchState(0.1, States.LOCK);
+        }
     }
 
     private void lock() {
