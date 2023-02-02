@@ -33,6 +33,7 @@ import frc.robot.wrappers.*;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI; //needed to initialize navx
+import edu.wpi.first.wpilibj.I2C; //needed to initialize armNavX
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -99,6 +100,7 @@ public class Robot extends TimedRobot {
 
   //private CameraWrapper camera;
 
+  private boolean lockWheels;
   private boolean depositButton;
   private boolean IntakePulleyButton;
   private boolean elevatorUpButton;
@@ -164,6 +166,7 @@ public class Robot extends TimedRobot {
   private final Balancer balancer;
 
   private final AHRS navX;
+  private final AHRS armNavX;
 
   boolean turnTo = false;
 
@@ -179,6 +182,7 @@ public class Robot extends TimedRobot {
     state = States.MANUAL;
 
     navX = new AHRS(SPI.Port.kMXP);
+    armNavX = new AHRS(I2C.Port.kMXP);
     swerveDrive = new SwerveDrive(navX);
     balancer = new Balancer(swerveDrive, navX);
     // ballCamera = new CameraWrapper(true);
@@ -245,6 +249,7 @@ public class Robot extends TimedRobot {
       xAxis = xboxController.getLeftX();
       yAxis = xboxController.getLeftY();
       rAxis = xboxController.getRightX();
+      lockWheels = xboxController.getAButton();
       //depositButton = xboxController.getAButton();
       //pulleyButton = xboxController.getRightBumper();
       //elevatorDepositButton = xboxController.getBButton();
@@ -313,6 +318,10 @@ public class Robot extends TimedRobot {
 
     if (xboxController.getBackButtonPressed()) {
       fieldOriented = !fieldOriented;
+    }
+
+    if (lockWheels) {
+      swerveDrive.drive(0.01, 0, 0, true);
     }
 
     swerveDrive.drive(x, y, r, true);
