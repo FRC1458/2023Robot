@@ -275,7 +275,7 @@ public class Robot extends TimedRobot {
       elevatorManualUp = xboxController.getPOV() == 90;
       elevatorManualDown = xboxController.getPOV() == 270;
     }
-    else if (controllerType == 1) {
+    else if (controllerType == 1) { // Joysticks
       xAxis = leftStick.getRawAxis(0);
       yAxis = leftStick.getRawAxis(1);
       rAxis = leftStick.getRawAxis(3);
@@ -291,7 +291,7 @@ public class Robot extends TimedRobot {
       yAxis = 0;
       rAxis = 0;
     }
-
+    // Change for current elevator (no middle state)
     if (elevTop) elevatorState = ElevatorStates.TOP;
     else if (elevMiddle) elevatorState = ElevatorStates.MIDDLE;
     else if (elevBottom) elevatorState = ElevatorStates.BOTTOM;
@@ -302,7 +302,7 @@ public class Robot extends TimedRobot {
     }
 
     double x,y,r,speedIncrease;
-    speedIncrease = regularSpeed;
+    speedIncrease = 0.25; // regularSpeed (variable)
 
     // if(speedIncreaseButton){
     //   speedIncrease = boostedSpeed;
