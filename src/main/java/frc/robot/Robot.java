@@ -12,6 +12,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import frc.robot.Lidar;
+
 //Documentation: first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/(last_part).html
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
@@ -151,6 +153,7 @@ public class Robot extends TimedRobot {
   private double boostedSpeed; 
 
   SwerveDrive swerveDrive;
+  Lidar lidar;
 
   int controllerType; 
 
@@ -185,6 +188,8 @@ public class Robot extends TimedRobot {
     armNavX = new AHRS(I2C.Port.kMXP);
     swerveDrive = new SwerveDrive(navX);
     balancer = new Balancer(swerveDrive, navX);
+    lidar = new Lidar();
+
     // ballCamera = new CameraWrapper(true);
 
     //navx = new NavX();
@@ -238,6 +243,8 @@ public class Robot extends TimedRobot {
     double rAxis;
 
 
+    SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
+    
     //SET CONTROLLER TYPE HERE
     //SET TO 0 FOR XBOX CONTROLLER
     //SET TO 1 FOR EVERYTHING ELSE

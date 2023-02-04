@@ -38,8 +38,8 @@ public class Balancer {
         ORIENT,
         FORWARD,
         CLIMB,
-        TUNING,
-        BACK,
+        TUNINGFORWARD,
+        TUNINGBACKWARD,
         LOCK,
         STOP
     }
@@ -61,8 +61,8 @@ public class Balancer {
         double tempPitch = getPitch();
         SmartDashboard.putString("Balancer state: ", state.toString());
         SmartDashboard.putNumber("Balancer Pitch", tempPitch);
-        if (tempPitch > maxPitch) {
-            maxPitch = tempPitch;
+        if (Math.abs(tempPitch) > maxPitch) {
+            maxPitch = Math.abs(tempPitch);
         }
         SmartDashboard.putNumber("Max pitch: ", maxPitch);
 
@@ -79,11 +79,11 @@ public class Balancer {
             case CLIMB:
                 climb();
                 break;
-            case TUNING:
-                tuning();
+            case TUNINGFORWARD:
+                tuningForward();
                 break;
-            case BACK:
-                back();
+            case TUNINGBACKWARD:
+                tuningBackward();
                 break;
             case LOCK:
                 lock();
@@ -108,38 +108,42 @@ public class Balancer {
     
     private void forward() {
         swerve.drive(0, -0.2, 0, true);
-        if (Math.abs(navx.getPitch()) > 10) {
+        if (Math.abs(getPitch()) > 10) {
             nextState(States.CLIMB);
             return;
         }
-        switchState(10, States.TUNING);
+        switchState(10, States.TUNINGFORWARD);
     }
 
     private void climb() {
-        switchState(2, States.TUNING);
+        switchState(1.5, States.TUNINGFORWARD);
     }
     
-    private void tuning() {
+    private void tuningForward() {
         if (getPitch() > 5) {
             swerve.drive(0, -0.05, 0, true); 
         }
         else if (getPitch() > 4) {
             swerve.drive(0, -0.025, 0, true); 
         }
-        else if (getPitch() < -5) {
-            swerve.drive(0, 0.05, 0, true); 
-        }
-        else if (getPitch() < -4) {
-            swerve.drive(0, 0.025, 0, true); 
-        }
         else {
-            nextState(States.BACK);
+            nextState(States.TUNINGBACKWARD);
         }
     }
 
-    private void back() {
-        swerve.drive(0, 0.005, 0, true);
-        switchState(0.1, States.LOCK);
+    private void tuningBackward() {
+        if (getPitch() < -5) {
+            swerve.drive(0, 0.05, 0, true);
+        }
+        else if (getPitch() < -4) {
+            swerve.drive(0, 0.025, 0, true);
+        }
+        else if (getPitch() < 4) {
+            switchState(0.5, States.LOCK);
+        }
+        else {
+            nextState(States.TUNINGFORWARD);
+        }
     }
     
     private void lock() {
@@ -166,10 +170,11 @@ public class Balancer {
     public void reset() {
         state = States.START;
         timer.reset();
+        maxPitch = 0;
     }
 
     private double getPitch() {
-        return navx.getPitch() * 4.0;
+        return navx.getPitch() * 3.0;
     }
 
 }
