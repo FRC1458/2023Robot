@@ -307,7 +307,7 @@ public class Robot extends TimedRobot {
     }
 
     double x,y,r,speedIncrease;
-    speedIncrease = 0.25; // regularSpeed (variable)
+    speedIncrease = regularSpeed;
 
     // if(speedIncreaseButton){
     //   speedIncrease = boostedSpeed;
@@ -333,6 +333,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     swerveDrive.resetNavX();
     swerveDrive.setEncoders();
+    balancer.reset();
   }
 
   @Override
