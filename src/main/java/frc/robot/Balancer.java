@@ -48,6 +48,7 @@ public class Balancer {
     private final AHRS navx;
 
     private States state = States.START;
+    private double maxPitch = 0;
 
     public Balancer(SwerveDrive swerve, AHRS navx) {
         this.swerve = swerve;
@@ -57,8 +58,14 @@ public class Balancer {
 
 
     public boolean balance() {
+        double tempPitch = getPitch();
         SmartDashboard.putString("Balancer state: ", state.toString());
-        SmartDashboard.putNumber("Balancer Pitch", getPitch());
+        SmartDashboard.putNumber("Balancer Pitch", tempPitch);
+        if (tempPitch > maxPitch) {
+            maxPitch = tempPitch;
+        }
+        SmartDashboard.putNumber("Max pitch: ", maxPitch);
+
         switch (state) {
             case START:
                 start();
