@@ -97,22 +97,6 @@
 	<widget field="Absolute Encoder Angle Front Left (1)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="18" y="8"/>
 	</widget>
-	<widget field="Lidar data" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="458" y="525"/>
-	</widget>
-	<widget field="Max pitch: " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="701"/>
-	</widget>
-	<widget field="Balancer Pitch" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="680"/>
-	</widget>
-	<widget field="Balancer state: " type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="27" y="659"/>
-	</widget>
-	<widget field="Arm NavX angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="81" y="479"/>
-		<height>20</height>
-	</widget>
 </dashboard>
 <live-window>
 </live-window>
