@@ -10,18 +10,6 @@ import frc.robot.wrappers.XboxControllerWrapper;
 
 public class Robot extends TimedRobot {
     enum States {
-    AUTONOMOUS,
-    MANUAL,
-    DETECT_BALL,
-    MOVE_TO_BALL,
-    PICK_UP_BALL,
-    GO_TO_HUB,
-    DROP_BALL,
-    AIM,
-    SHOOT,
-    GO_TO_HUMAN; 
-
-
   }
 
   States state;
@@ -38,6 +26,7 @@ public class Robot extends TimedRobot {
 
   SwerveDrive swerveDrive;
   Lidar lidar;
+  Lidar armLidar;
   
   private final Balancer balancer;
 
@@ -47,17 +36,16 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     super(0.03);
-        leftStick = new JoystickWrapper(0);
+    leftStick = new JoystickWrapper(0);
     rightStick = new JoystickWrapper(1);
     xboxController = new XboxControllerWrapper(0);
-                state = States.MANUAL;
 
     navX = new AHRS(SPI.Port.kMXP);
     armNavX = new ArmNavX();
     swerveDrive = new SwerveDrive(navX);
     balancer = new Balancer(swerveDrive, navX);
     lidar = new Lidar(RobotConstants.lidarPort);
-    armlidar = new Lidar(RobotConstants.armLidarPort);
+    armLidar = new Lidar(RobotConstants.armLidarPort);
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
@@ -71,7 +59,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-        swerveDrive.resetNavX();
+    swerveDrive.resetNavX();
     swerveDrive.setEncoders();
   }
   @Override
@@ -79,17 +67,36 @@ public class Robot extends TimedRobot {
     double xAxis;
     double yAxis;
     double rAxis;
+    int armState = 1; //1 is bottom, 2 is middle, 3 is lifted all the way
+    boolean clawState = true; //true is open, false is closed
 
     SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
 
-        if (RobotConstants.controller == RobotConstants.ControllerType.XBOX) {
+    if (RobotConstants.controller == RobotConstants.ControllerType.XBOX) {
       xAxis = xboxController.getLeftX();
       yAxis = xboxController.getLeftY();
       rAxis = xboxController.getRightX();
-      lockWheels = xboxController.getAButton();
+      lockWheels = xboxController.getXButton();
       resetNavX = xboxController.getStartButton();
-      
+      //why not have it swap arm states using a single button?
+      //I used else-if statements instead of just if statements like originally
+      if (xboxController.getYButton()) {
+        armState = 3;
+      }
+      else if (xboxController.getBButton()) {
+        armState = 2;
+      }
+      else if (xboxController.getAButton()) {
+        armState = 1;
+      }
+      //why not just have clawState = true when a button/trigger is pressed, and false otherwise?
+      if (xboxController.getRightTriggerAxis() > 0.7) {
+        clawState = false;
+      }
+      else if (xboxController.getLeftTriggerAxis() > 0.7) {
+        clawState = true;
+      }
     }
     else if (RobotConstants.controller == RobotConstants.ControllerType.JOYSTICK) {
       xAxis = leftStick.getRawAxis(0);
@@ -111,7 +118,7 @@ public class Robot extends TimedRobot {
     double x,y,r,speedIncrease;
     speedIncrease = regularSpeed;
 
-                x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
+    x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
     y= Math.abs(yAxis)*yAxis * speedIncrease;
     r= Math.abs(rAxis)*rAxis * speedIncrease;
 
