@@ -56,7 +56,8 @@ public class Robot extends TimedRobot {
     armNavX = new ArmNavX();
     swerveDrive = new SwerveDrive(navX);
     balancer = new Balancer(swerveDrive, navX);
-    lidar = new Lidar();
+    lidar = new Lidar(RobotConstants.lidarPort);
+    armlidar = new Lidar(RobotConstants.armLidarPort);
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;

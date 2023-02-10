@@ -80,4 +80,5 @@ public class RobotConstants {
     public final static Rotation2d backRightAngle = new Rotation2d(0);
 
     public final static int lidarPort = 1;
+    public final static int armLidarPort = 4;
 }

@@ -7,9 +7,9 @@ public class Lidar {
     DutyCycle lasershark;
 
 
-    public Lidar() {
+    public Lidar(int port) {
 
-        lasershark = new DutyCycle(new DigitalInput(RobotConstants.lidarPort));
+        lasershark = new DutyCycle(new DigitalInput(port));
     }
 
     public double getDistanceCentimeters() {
