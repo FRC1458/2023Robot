@@ -27,7 +27,8 @@ public class Robot extends TimedRobot {
   SwerveDrive swerveDrive;
   Lidar lidar;
   Lidar armLidar;
-  
+
+  Limelight limelight;
   private final Balancer balancer;
 
   private final AHRS navX;
@@ -46,6 +47,7 @@ public class Robot extends TimedRobot {
     balancer = new Balancer(swerveDrive, navX);
     lidar = new Lidar(RobotConstants.lidarPort);
     armLidar = new Lidar(RobotConstants.armLidarPort);
+    limelight = new Limelight();
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
@@ -72,6 +74,8 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
+
+    limelight.readPeriodic();
 
     if (RobotConstants.controller == RobotConstants.ControllerType.XBOX) {
       xAxis = xboxController.getLeftX();

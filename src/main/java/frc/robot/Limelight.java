@@ -9,21 +9,28 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight {
     NetworkTable table;
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
+    NetworkTableEntry tx;
+    NetworkTableEntry ty;
+    NetworkTableEntry ta;
+    NetworkTableEntry led;
+    float x;
+    float y;
+    float area;
 
-    //read values periodically
-    double x = tx.getDouble(0.0);
-    double y = ty.getDouble(0.0);
-    double area = ta.getDouble(0.0);
-
-    
     public Limelight(){
         table = NetworkTableInstance.getDefault().getTable("limelight");
+        NetworkTableEntry tx = table.getEntry("tx");
+        NetworkTableEntry ty = table.getEntry("ty");
+        NetworkTableEntry ta = table.getEntry("ta");
+        NetworkTableEntry led = table.getEntry("ledMode");
+        led.setNumber(3.000);
     }
 
     public void readPeriodic() {
+        //read values periodically
+        float x = tx.getFloat(69);
+        float y = ty.getFloat(69);
+        float area = ta.getFloat(69);
         //post to smart dashboard periodically
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
