@@ -3,6 +3,9 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class RobotConstants {
+    public enum ControllerType {XBOX, JOYSTICK}
+    public static final ControllerType controller = ControllerType.XBOX;
+
     public final static int frontLeftAngleID = 19;
     public final static int frontRightAngleID = 15;
     public final static int backLeftAngleID = 13;
@@ -18,15 +21,9 @@ public class RobotConstants {
     public final static double backLeftAngleOffset = 0.4;
     public final static double backRightAngleOffset = 0;
 
-    public final static double alphaX = 1;
-    public final static double betaY = 1;
-    public final static double gammaR = 1;
-
     public final static double kP = 0.1;
     public final static double kI = 0.000001;
     public final static double kD = 0.000001;
-
-    public final static double angleMotorMaxSpeed = 0.01;
 
     public final static double frontLeftXMeters = 0.273;
     public final static double frontLeftYMeters = 0.273;
@@ -81,4 +78,13 @@ public class RobotConstants {
     public final static Rotation2d frontRightAngle = new Rotation2d(0);
     public final static Rotation2d backLeftAngle = new Rotation2d(0);
     public final static Rotation2d backRightAngle = new Rotation2d(0);
+
+    public final static int lidarPort = 1;
+    public final static int armLidarPort = 4;
+
+    public final static double balancePitchStart = 10;
+    public final static double balancePitchHeavy = 5;
+    public final static double balanceSpeedHeavy = 0.05;
+    public final static double balancePitchSmall = 4;
+    public final static double balanceSpeedSmall = 0.025;
 }
