@@ -19,10 +19,10 @@ public class Limelight {
 
     public Limelight(){
         table = NetworkTableInstance.getDefault().getTable("limelight");
-        NetworkTableEntry tx = table.getEntry("tx");
-        NetworkTableEntry ty = table.getEntry("ty");
-        NetworkTableEntry ta = table.getEntry("ta");
-        NetworkTableEntry led = table.getEntry("ledMode");
+        tx = table.getEntry("tx");
+        ty = table.getEntry("ty");
+        ta = table.getEntry("ta");
+        led = table.getEntry("ledMode");
         led.setNumber(3.000);
     }
 

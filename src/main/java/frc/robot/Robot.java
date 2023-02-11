@@ -73,6 +73,7 @@ public class Robot extends TimedRobot {
     boolean clawState = true; //true is open, false is closed
 
     SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
+    SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
 
     limelight.readPeriodic();
