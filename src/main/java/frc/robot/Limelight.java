@@ -24,16 +24,23 @@ public class Limelight {
         ta = table.getEntry("ta");
         led = table.getEntry("ledMode");
         led.setNumber(3.000);
+        x = tx.getFloat(69);
+        y = ty.getFloat(69);
+        area = ta.getFloat(69);
     }
 
     public void readPeriodic() {
         //read values periodically
-        float x = tx.getFloat(69);
-        float y = ty.getFloat(69);
-        float area = ta.getFloat(69);
+        x = tx.getFloat(69);
+        y = ty.getFloat(69);
+        area = ta.getFloat(69);
         //post to smart dashboard periodically
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
+    }
+
+    public double getYOffset() {
+        return (y);
     }
 }

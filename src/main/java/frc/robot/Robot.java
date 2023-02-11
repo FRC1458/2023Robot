@@ -10,6 +10,8 @@ import frc.robot.wrappers.XboxControllerWrapper;
 
 public class Robot extends TimedRobot {
     enum States {
+      MANUAL,
+      ALIGN
   }
 
   States state;
@@ -61,6 +63,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    state = States.MANUAL;
     swerveDrive.resetNavX();
     swerveDrive.setEncoders();
   }
@@ -69,6 +72,8 @@ public class Robot extends TimedRobot {
     double xAxis;
     double yAxis;
     double rAxis;
+    double x,y,r,speedIncrease;
+    speedIncrease = regularSpeed;
     int armState = 1; //1 is bottom, 2 is middle, 3 is lifted all the way
     boolean clawState = true; //true is open, false is closed
 
@@ -118,14 +123,27 @@ public class Robot extends TimedRobot {
     if (resetNavX) {
       swerveDrive.resetNavX();
       swerveDrive.setEncoders();
-    }
 
-    double x,y,r,speedIncrease;
-    speedIncrease = regularSpeed;
+    if (xboxController.getRightBumper()) {
+      state = States.ALIGN;
+    }
+    if (xboxController.getLeftBumper()) {
+      state = States.ALIGN;
+    }
+    }
 
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
     y= Math.abs(yAxis)*yAxis * speedIncrease;
     r= Math.abs(rAxis)*rAxis * speedIncrease;
+
+    switch(state) {
+      case MANUAL:
+        manual(x, y, r);
+        break;
+      case ALIGN:
+        align();
+        break;
+    }
 
     if (xboxController.getBackButtonPressed()) {
       fieldOriented = !fieldOriented;
@@ -134,10 +152,15 @@ public class Robot extends TimedRobot {
     if (lockWheels) {
       swerveDrive.drive(0.01, 0, 0, true);
     }
+  }
 
+  private void manual(double x, double y, double r) {
     swerveDrive.drive(x, y, r, true);
   }
 
+  private void align() {
+    swerveDrive.drive(0, (limelight.getYOffset()/1000000), 0, true);
+  }
   @Override
   public void autonomousInit() {
     swerveDrive.resetNavX();
