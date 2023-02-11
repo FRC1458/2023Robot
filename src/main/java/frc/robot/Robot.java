@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
       swerveDrive.setEncoders();
 
     if (xboxController.getRightBumper()) {
-      state = States.ALIGN;
+      state = States.MANUAL;
     }
     if (xboxController.getLeftBumper()) {
       state = States.ALIGN;
@@ -167,7 +167,7 @@ public class Robot extends TimedRobot {
   }
 
   private void align() {
-    swerveDrive.drive(0, (limelight.getYOffset()/1000000), 0, true);
+    swerveDrive.drive(0, (limelight.getYOffset()/1000), 0, true);
   }
   @Override
   public void autonomousInit() {
