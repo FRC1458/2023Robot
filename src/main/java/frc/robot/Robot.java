@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.swervedrive.SwerveDrive;
 import frc.robot.wrappers.JoystickWrapper;
+import frc.robot.wrappers.TalonFXWrapper;
 import frc.robot.wrappers.XboxControllerWrapper;
 
 public class Robot extends TimedRobot {
@@ -33,6 +34,8 @@ public class Robot extends TimedRobot {
   Limelight limelight;
   private final Balancer balancer;
 
+  private TalonFXWrapper arm;
+
   private final AHRS navX;
   private final ArmNavX armNavX;
 
@@ -50,6 +53,8 @@ public class Robot extends TimedRobot {
     lidar = new Lidar(RobotConstants.lidarPort);
     armLidar = new Lidar(RobotConstants.armLidarPort);
     limelight = new Limelight();
+
+    arm = new TalonFXWrapper(42);
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
@@ -69,6 +74,9 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void teleopPeriodic() {
+
+    arm.set(-.2);
+
     double xAxis;
     double yAxis;
     double rAxis;
