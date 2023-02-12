@@ -180,4 +180,21 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     balancer.balance();
   }
+
+  BaseLimelight reflective_tape;
+  boolean pos = false;
+  double iterate = 500;
+  double thresh = 3;
+  @Override public void testInit() {
+    reflective_tape = new BaseLimelight(0);
+  }
+  @Override public void testPeriodic() {
+    double x = 0.0;
+    reflective_tape.display();
+    double r = reflective_tape.get_rotation();
+    SmartDashboard.putNumber("RequiredRotation", r);
+    if (r > thresh) {x = 0.05;}
+    if (r < -thresh) {x = -0.05;}
+    swerveDrive.drive(-x, 0, 0, false);
+  }
 }
