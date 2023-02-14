@@ -10,7 +10,8 @@ import frc.robot.wrappers.TalonFXWrapper;
 import frc.robot.wrappers.XboxControllerWrapper;
 
 public class Robot extends TimedRobot {
-    enum States {
+
+  enum States {
       MANUAL,
       ALIGN
   }
@@ -21,6 +22,7 @@ public class Robot extends TimedRobot {
   private XboxControllerWrapper xboxController;
 
   private boolean lockWheels;
+  private boolean switchStates;
   private boolean resetNavX;
   private boolean fieldOriented;
 
@@ -56,8 +58,6 @@ public class Robot extends TimedRobot {
     limelight = new Limelight();
     aligner = new Aligner(swerveDrive, limelight, lidar);
 
-    arm = new TalonFXWrapper(42);
-
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
 
@@ -76,9 +76,6 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void teleopPeriodic() {
-
-    arm.set(-.2);
-
     double xAxis;
     double yAxis;
     double rAxis;
@@ -101,17 +98,18 @@ public class Robot extends TimedRobot {
       rAxis = xboxController.getRightX();
       lockWheels = xboxController.getXButton();
       resetNavX = xboxController.getStartButton();
+      switchStates = xboxController.getAButton();
       //why not have it swap arm states using a single button?
       //I used else-if statements instead of just if statements like originally
-      if (xboxController.getYButton()) {
-        armState = 3;
-      }
-      else if (xboxController.getBButton()) {//also used for testing align right now
-        armState = 2;
-      }
-      else if (xboxController.getAButton()) {//also used for testing align right now
-        armState = 1;
-      }
+      //if (xboxController.getYButton()) {
+        //armState = 3;
+      //}
+      //else if (xboxController.getBButton()) {//also used for testing align right now
+        //armState = 2;
+      //}
+      //else if (xboxController.getAButton()) {//also used for testing align right now
+        //armState = 1;
+      //}
       //why not just have clawState = true when a button/trigger is pressed, and false otherwise?
       if (xboxController.getRightTriggerAxis() > 0.7) {
         clawState = false;
@@ -135,13 +133,10 @@ public class Robot extends TimedRobot {
     if (resetNavX) {
       swerveDrive.resetNavX();
       swerveDrive.setEncoders();
+    }
 
-    if (xboxController.getAButton()) {
-      state = States.MANUAL;
-    }
-    if (xboxController.getBButton()) {
+    if (switchStates) {
       state = States.ALIGN;
-    }
     }
 
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;

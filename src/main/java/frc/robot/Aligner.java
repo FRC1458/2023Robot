@@ -46,14 +46,11 @@ public class Aligner {
         }
         return false;
     }
-
-    private double convertToRad(double degrees) {
-        return ((degrees*Math.PI)/(180));
-    }
     private void start() {
         xOffset = limelight.getXOffset();
         yDistance = lidar.getDistanceCentimeters();
-        xDistance = Math.tan(convertToRad(xOffset));
+        xOffset = (Math.PI/2)-(Math.toRadians(xOffset));
+        xDistance = (lidar.getDistanceCentimeters()/xOffset);
         state = States.FAST;
     }
 
