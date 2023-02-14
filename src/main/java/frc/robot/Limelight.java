@@ -40,7 +40,11 @@ public class Limelight {
         SmartDashboard.putNumber("LimelightArea", area);
     }
 
-    public double getYOffset() {
-        return (y);
+    public double getXOffset() {
+        return (x);
+    }
+
+    public double getXOffset(String target) {
+        return (tx.getFloat(69));
     }
 }
