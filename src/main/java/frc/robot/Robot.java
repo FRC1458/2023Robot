@@ -33,6 +33,7 @@ public class Robot extends TimedRobot {
 
   Limelight limelight;
   private final Balancer balancer;
+  private final Aligner aligner;
 
   private TalonFXWrapper arm;
 
@@ -53,6 +54,7 @@ public class Robot extends TimedRobot {
     lidar = new Lidar(RobotConstants.lidarPort);
     armLidar = new Lidar(RobotConstants.armLidarPort);
     limelight = new Limelight();
+    aligner = new Aligner(swerveDrive, limelight, lidar);
 
     arm = new TalonFXWrapper(42);
 
@@ -88,6 +90,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
+    SmartDashboard.putString("State", state.toString());
+    SmartDashboard.putNumber("xoff", limelight.getXOffset());
 
     limelight.readPeriodic();
 
@@ -102,10 +106,10 @@ public class Robot extends TimedRobot {
       if (xboxController.getYButton()) {
         armState = 3;
       }
-      else if (xboxController.getBButton()) {
+      else if (xboxController.getBButton()) {//also used for testing align right now
         armState = 2;
       }
-      else if (xboxController.getAButton()) {
+      else if (xboxController.getAButton()) {//also used for testing align right now
         armState = 1;
       }
       //why not just have clawState = true when a button/trigger is pressed, and false otherwise?
@@ -132,10 +136,10 @@ public class Robot extends TimedRobot {
       swerveDrive.resetNavX();
       swerveDrive.setEncoders();
 
-    if (xboxController.getRightBumper()) {
+    if (xboxController.getAButton()) {
       state = States.MANUAL;
     }
-    if (xboxController.getLeftBumper()) {
+    if (xboxController.getBButton()) {
       state = States.ALIGN;
     }
     }
@@ -167,7 +171,7 @@ public class Robot extends TimedRobot {
   }
 
   private void align() {
-    swerveDrive.drive(0, (limelight.getYOffset()/1000), 0, true);
+    aligner.align();
   }
   @Override
   public void autonomousInit() {
