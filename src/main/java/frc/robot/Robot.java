@@ -13,7 +13,8 @@ public class Robot extends TimedRobot {
 
   enum States {
       MANUAL,
-      ALIGN
+      ALIGN,
+      BALANCE
   }
 
   States state;
@@ -22,7 +23,9 @@ public class Robot extends TimedRobot {
   private XboxControllerWrapper xboxController;
 
   private boolean lockWheels;
-  private boolean switchStates;
+  private boolean stateManual;
+  private boolean stateAlign;
+  private boolean stateBalance;
   private boolean resetNavX;
   private boolean fieldOriented;
 
@@ -98,7 +101,9 @@ public class Robot extends TimedRobot {
       rAxis = xboxController.getRightX();
       lockWheels = xboxController.getXButton();
       resetNavX = xboxController.getStartButton();
-      switchStates = xboxController.getAButton();
+      stateManual = xboxController.getAButton();
+      stateAlign = xboxController.getRightBumper();
+      stateBalance = xboxController.getLeftBumper();
       //why not have it swap arm states using a single button?
       //I used else-if statements instead of just if statements like originally
       //if (xboxController.getYButton()) {
@@ -135,8 +140,14 @@ public class Robot extends TimedRobot {
       swerveDrive.setEncoders();
     }
 
-    if (switchStates) {
+    if (stateManual) {
+      state = States.MANUAL;
+    }
+    else if (stateAlign) {
       state = States.ALIGN;
+    }
+    else if (stateBalance) {
+      state = States.BALANCE;
     }
 
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
@@ -149,6 +160,9 @@ public class Robot extends TimedRobot {
         break;
       case ALIGN:
         align();
+        break;
+      case BALANCE:
+        balance();
         break;
     }
 
@@ -166,7 +180,13 @@ public class Robot extends TimedRobot {
   }
 
   private void align() {
+    aligner.reset();
     aligner.align();
+  }
+
+  private void balance() {
+    balancer.reset();
+    balancer.balance();
   }
   @Override
   public void autonomousInit() {

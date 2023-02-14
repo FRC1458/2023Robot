@@ -56,8 +56,8 @@ public class Aligner {
 
     private void fast() {
         timer.start();
-        swerve.drive((0.02), 0, 0, true); //change to higher speed, multiply by sign of xDistance
-        if (timer.hasElapsed(xDistance)) {//some value * xDistance
+        swerve.drive((0.05), 0, 0, true); //change to higher speed, multiply by sign of xDistance
+        if (timer.hasElapsed(xDistance * 20)) {//some value * xDistance, currently assumes swerve input is m/s
             state = States.SLOW;
         }
     }
@@ -75,4 +75,8 @@ public class Aligner {
         //need to return to teleopPeriodic
     }
 
+    public void reset() {
+        state = States.START;
+        timer.reset();
+    }
 }
