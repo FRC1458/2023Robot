@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
     xboxController = new XboxControllerWrapper(0);
 
     navX = new AHRS(SPI.Port.kMXP);
-    armNavX = new ArmNavX();
+    armNavX = new ArmNavX(4.0);
     swerveDrive = new SwerveDrive(navX);
     balancer = new Balancer(swerveDrive, navX);
     lidar = new Lidar(RobotConstants.lidarPort);
@@ -162,7 +162,6 @@ public class Robot extends TimedRobot {
         align();
         break;
       case BALANCE:
-        balancer.reset();
         balance();
         break;
     }
@@ -185,6 +184,7 @@ public class Robot extends TimedRobot {
   }
 
   private void balance() {
+    balancer.balance();
   }
   @Override
   public void autonomousInit() {
