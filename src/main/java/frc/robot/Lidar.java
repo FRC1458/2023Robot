@@ -15,4 +15,6 @@ public class Lidar {
     public double getDistanceCentimeters() {
         return lasershark.getOutput() * 400;
     }
+
+    public double getDistanceMeters() {return lasershark.getOutput() * 40000;}
 }
