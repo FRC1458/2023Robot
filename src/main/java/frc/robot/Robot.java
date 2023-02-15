@@ -159,9 +159,11 @@ public class Robot extends TimedRobot {
         manual(x, y, r);
         break;
       case ALIGN:
+        //aligner.reset();
         align();
         break;
       case BALANCE:
+        balancer.reset();
         balance();
         break;
     }
@@ -180,13 +182,11 @@ public class Robot extends TimedRobot {
   }
 
   private void align() {
-    aligner.reset();
     aligner.align();
   }
 
   private void balance() {
-    balancer.reset();
-    balancer.balance();
+    //balancer.balance();
   }
   @Override
   public void autonomousInit() {

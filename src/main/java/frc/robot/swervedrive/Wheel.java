@@ -119,7 +119,7 @@ public class Wheel {
     }
 
     public void setEncoders(double offset) {
-        encoder.setPosition(offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096) * RobotConstants.swerveDriveGearRatio / 4096.0);
+        encoder.setPosition(offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096) * RobotConstants.swerveDriveGearRatio / 4096);//4096, 4096.0
         SwerveModuleState state = new SwerveModuleState(0.000000000001, Rotation2d.fromDegrees(0));
         this.drive(state.speedMetersPerSecond, state.angle.getDegrees());
     }
