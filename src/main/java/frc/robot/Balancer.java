@@ -75,7 +75,7 @@ public class Balancer {
             nextState(States.CLIMB);
             return;
         }
-        switchState(10, States.TUNINGFORWARD);
+        switchState(1, States.TUNINGFORWARD);
     }
 
     private void climb() {

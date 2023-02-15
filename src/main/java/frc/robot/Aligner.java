@@ -50,14 +50,14 @@ public class Aligner {
         xOffset = limelight.getXOffset();
         yDistance = lidar.getDistanceCentimeters();
         xOffset = (Math.PI/2)-(Math.toRadians(xOffset));
-        xDistance = (lidar.getDistanceCentimeters()/xOffset);
+        xDistance = (lidar.getDistanceCentimeters()/(Math.tan(xOffset)));
         state = States.FAST;
     }
 
     private void fast() {
         timer.start();
-        swerve.drive((0.05), 0, 0, true); //change to higher speed, multiply by sign of xDistance
-        if (timer.hasElapsed(xDistance * 20)) {//some value * xDistance, currently assumes swerve input is m/s
+        swerve.drive((-0.05), 0, 0, true); //change to higher speed, multiply by sign of xDistance
+        if (timer.hasElapsed(xDistance * 0.1)) {//some value * xDistance, currently assumes swerve input is .1m/s
             state = States.SLOW;
         }
     }
