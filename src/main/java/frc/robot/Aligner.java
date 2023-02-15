@@ -56,15 +56,15 @@ public class Aligner {
 
     private void fast() {
         timer.start();
-        swerve.drive((-0.1), 0, 0, true); //change to higher speed, multiply by sign of xDistance
-        if (timer.hasElapsed(xDistance * 0.03)) {//some value * xDistance, currently assumes swerve input is .1m/s
+        swerve.drive((-0.05), 0, 0, true); //change to higher speed, multiply by sign of xDistance
+        if (timer.hasElapsed(xDistance * 0.1)) {//some value * xDistance, currently assumes swerve input is .1m/s
             state = States.SLOW;
         }
     }
 
     private void slow() {//same as fast but with slower swerve.drive() for fine-tuning
         timer.reset();
-        swerve.drive(0, 0.01, 0, true);
+        swerve.drive(0.01, 0, 0, true);
         if (timer.hasElapsed(yDistance)) {
             state = States.STOP;
         }
