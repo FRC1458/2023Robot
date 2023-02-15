@@ -57,7 +57,7 @@ public class Aligner {
     private void fast() {
         timer.start();
         swerve.drive((-0.1), 0, 0, true); //change to higher speed, multiply by sign of xDistance
-        if (timer.hasElapsed(xDistance * 0.03)) {//some value * xDistance, currently assumes swerve input is .1m/s
+        if (timer.hasElapsed(xDistance * 0.0235)) {//some value * xDistance, currently assumes swerve input is .1m/s
             state = States.SLOW;
         }
     }
