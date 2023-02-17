@@ -27,6 +27,11 @@ public class Robot extends TimedRobot {
   private boolean stateAlign;
   private boolean stateBalance;
   private boolean resetNavX;
+  private boolean arm3;
+  private boolean arm2;
+  private boolean arm1;
+  private boolean clawFalse;
+  private boolean clawTrue;
   private boolean fieldOriented;
 
   private double regularSpeed;
@@ -76,6 +81,8 @@ public class Robot extends TimedRobot {
     state = States.MANUAL;
     swerveDrive.resetNavX();
     swerveDrive.setEncoders();
+    aligner.reset();
+    balancer.reset();
   }
   @Override
   public void teleopPeriodic() {
@@ -104,22 +111,26 @@ public class Robot extends TimedRobot {
       stateManual = xboxController.getAButton();
       stateAlign = xboxController.getRightBumper();
       stateBalance = xboxController.getLeftBumper();
+      arm3 = xboxController.getYButton();
+      arm2 = xboxController.getBButton();
+      arm1 = xboxController.getAButton();//also used for stateManual
+      clawFalse = xboxController.getRightTriggerAxis() > 0.7;
+      clawTrue = xboxController.getLeftTriggerAxis() > 0.7;
       //why not have it swap arm states using a single button?
-      //I used else-if statements instead of just if statements like originally
-      //if (xboxController.getYButton()) {
-        //armState = 3;
-      //}
-      //else if (xboxController.getBButton()) {//also used for testing align right now
-        //armState = 2;
-      //}
-      //else if (xboxController.getAButton()) {//also used for testing align right now
-        //armState = 1;
-      //}
+      if (arm3) {
+        armState = 3;
+      }
+      else if (arm2) {
+        armState = 2;
+      }
+      else if (arm1) {
+        armState = 1;
+      }
       //why not just have clawState = true when a button/trigger is pressed, and false otherwise?
-      if (xboxController.getRightTriggerAxis() > 0.7) {
+      if (clawFalse) {
         clawState = false;
       }
-      else if (xboxController.getLeftTriggerAxis() > 0.7) {
+      else if (clawTrue) {
         clawState = true;
       }
     }

@@ -17,7 +17,8 @@ public class Aligner {
     private final Limelight limelight;
     private final Lidar lidar;
 
-    private final double metersToSwerve = 0.0000235;//multiply by meters to give a value to input to swerve
+    private final double metersToSwerve = 0.0235;//multiply by meters to give a value to input to swerve
+    private double testOffset = 0.01; //Multiplies to slow bot for testing for safety
     private double xOffset;
     private double yDistance;
     private double xDistance;
@@ -57,11 +58,13 @@ public class Aligner {
         state = States.FAST;
     }
 //-.1 for metersToSwerve * 10, -.1*xDistance for xDistance*metersToSwerve * 10
-//y component and timer divided by 10 from calculated values for safety for test, change back if everything works
+//Speeds divided by 100 for testing
     private void fast() {
         timer.start();
-        swerve.drive(-0.1, -.01 * xDistance, 0, true); //change to higher speed, multiply by sign of xDistance
-        if (timer.hasElapsed(xDistance * metersToSwerve)) {//some value * xDistance, currently assumes swerve input is .1m/s
+        if (xDistance < 10) {//Just to be safe, remove if testing outdoors
+            swerve.drive(-0.001, -0.001 * xDistance, 0, true); //change to higher speed, multiply by sign of xDistance
+        }
+        if (timer.hasElapsed(xDistance * metersToSwerve * 10)) {//some value * xDistance, currently assumes swerve input is .1m/s
             state = States.SLOW;
         }
     }
