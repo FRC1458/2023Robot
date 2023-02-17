@@ -53,24 +53,24 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     super(0.03);
-    leftStick = new JoystickWrapper(0);
-    rightStick = new JoystickWrapper(1);
+    //leftStick = new JoystickWrapper(0);//uncomment if using them
+    //rightStick = new JoystickWrapper(1);
     xboxController = new XboxControllerWrapper(0);
 
     navX = new AHRS(SPI.Port.kMXP);
     armNavX = new ArmNavX(4.0);
     swerveDrive = new SwerveDrive(navX);
-    balancer = new Balancer(swerveDrive, navX);
     lidar = new Lidar(RobotConstants.lidarPort);
     armLidar = new Lidar(RobotConstants.armLidarPort);
     limelight = new Limelight();
+
+    balancer = new Balancer(swerveDrive, navX);
     aligner = new Aligner(swerveDrive, limelight, lidar);
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
 
     fieldOriented = RobotConstants.fieldOriented;
-
   }
   @Override
   public void robotInit() {
@@ -91,6 +91,7 @@ public class Robot extends TimedRobot {
     double rAxis;
     double x,y,r,speedIncrease;
     speedIncrease = regularSpeed;
+
     int armState = 1; //1 is bottom, 2 is middle, 3 is lifted all the way
     boolean clawState = true; //true is open, false is closed
 
@@ -98,7 +99,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
     SmartDashboard.putString("State", state.toString());
-    SmartDashboard.putNumber("xoff", limelight.getXOffset());
 
     limelight.readPeriodic();
 
@@ -106,34 +106,20 @@ public class Robot extends TimedRobot {
       xAxis = xboxController.getLeftX();
       yAxis = xboxController.getLeftY();
       rAxis = xboxController.getRightX();
+
       lockWheels = xboxController.getXButton();
       resetNavX = xboxController.getStartButton();
       stateManual = xboxController.getAButton();
       stateAlign = xboxController.getRightBumper();
       stateBalance = xboxController.getLeftBumper();
+
       arm3 = xboxController.getYButton();
       arm2 = xboxController.getBButton();
       arm1 = xboxController.getAButton();//also used for stateManual
       clawFalse = xboxController.getRightTriggerAxis() > 0.7;
       clawTrue = xboxController.getLeftTriggerAxis() > 0.7;
-      //why not have it swap arm states using a single button?
-      if (arm3) {
-        armState = 3;
-      }
-      else if (arm2) {
-        armState = 2;
-      }
-      else if (arm1) {
-        armState = 1;
-      }
-      //why not just have clawState = true when a button/trigger is pressed, and false otherwise?
-      if (clawFalse) {
-        clawState = false;
-      }
-      else if (clawTrue) {
-        clawState = true;
-      }
     }
+
     else if (RobotConstants.controller == RobotConstants.ControllerType.JOYSTICK) {
       xAxis = leftStick.getRawAxis(0);
       yAxis = leftStick.getRawAxis(1);
@@ -146,19 +132,34 @@ public class Robot extends TimedRobot {
       rAxis = 0;
     }
 
+    if (arm3) {
+      armState = 3;
+    }
+    else if (arm2) {
+      armState = 2;
+    }
+    else if (arm1) {
+      armState = 1;
+    }
+
+    if (clawFalse) {
+      clawState = false;
+    }
+    else if (clawTrue) {
+      clawState = true;
+    }
+
     if (resetNavX) {
       swerveDrive.resetNavX();
       swerveDrive.setEncoders();
     }
 
-    if (stateManual) {
-      state = States.MANUAL;
+    if (xboxController.getBackButtonPressed()) {
+      fieldOriented = !fieldOriented;
     }
-    else if (stateAlign) {
-      state = States.ALIGN;
-    }
-    else if (stateBalance) {
-      state = States.BALANCE;
+
+    if (lockWheels) {
+      swerveDrive.drive(0.01, 0, 0, true);
     }
 
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
@@ -177,23 +178,23 @@ public class Robot extends TimedRobot {
         break;
     }
 
-    if (xboxController.getBackButtonPressed()) {
-      fieldOriented = !fieldOriented;
+    if (stateManual) {
+      state = States.MANUAL;
     }
-
-    if (lockWheels) {
-      swerveDrive.drive(0.01, 0, 0, true);
+    else if (stateAlign) {
+      state = States.ALIGN;
+    }
+    else if (stateBalance) {
+      state = States.BALANCE;
     }
   }
 
   private void manual(double x, double y, double r) {
     swerveDrive.drive(x, y, r, true);
   }
-
   private void align() {
     aligner.align();
   }
-
   private void balance() {
     balancer.balance();
   }

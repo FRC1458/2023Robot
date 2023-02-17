@@ -87,4 +87,6 @@ public class RobotConstants {
     public final static double balanceSpeedHeavy = 0.05;
     public final static double balancePitchSmall = 4;
     public final static double balanceSpeedSmall = 0.025;
+
+    public final static double metersToSwerve = 0.0235;
 }

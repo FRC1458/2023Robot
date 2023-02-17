@@ -17,13 +17,16 @@ public class ArmNavX{
     this.sampling = sampling;
   }
 
-  public double getPitch(){
+  public double getSmoothPitch(){
     double ret = 0;
     buffer.add(ahrs.getPitch());
-    if (buffer.size() > sampling) {buffer.remove(0);}
+    if (buffer.size() > sampling) {buffer.remove(0);}//sampling should be an int
     for (double i : buffer) {ret += i;}
     ret /= sampling;
     return ret;
+  }
+  public double getPitch() {
+    return ahrs.getPitch() * 3.0;
   }
 
   //public void autonomous() {}

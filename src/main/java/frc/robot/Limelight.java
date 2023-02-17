@@ -8,6 +8,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 
 public class Limelight {
+    int pipeline;
     NetworkTable table;
     NetworkTableEntry tx;
     NetworkTableEntry ty;
@@ -43,8 +44,7 @@ public class Limelight {
     public double getXOffset() {
         return (x);
     }
-
-    public double getXOffset(String target) {
-        return (tx.getFloat(69));
+    public double getYOffset() {
+        return (y);
     }
 }
