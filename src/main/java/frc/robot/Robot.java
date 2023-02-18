@@ -104,6 +104,9 @@ public class Robot extends TimedRobot {
 
     limelight.readPeriodic();
 
+    Solenoid armSolenoid = new Solenoid(1, 1, 2); // change to correct values
+    Solenoid clawSolenoid = new Solenoid(2, 3, 4); // change to correct values
+
     if (RobotConstants.controller == RobotConstants.ControllerType.XBOX) {
       xAxis = xboxController.getLeftX();
       yAxis = xboxController.getLeftY();
@@ -136,6 +139,7 @@ public class Robot extends TimedRobot {
 
     if (arm3) {
       armState = 3;
+      clawSolenoid.forward();
     }
     else if (arm2) {
       armState = 2;
@@ -220,9 +224,6 @@ public class Robot extends TimedRobot {
   @Override 
   public void testInit() {
     reflective_tape = new Limelight(0);
-    Solenoid s1 = new Solenoid(1, 1, 2); // change to correct values
-    Solenoid s2 = new Solenoid(2, 3, 4); // change to correct values
-    Solenoid s3 = new Solenoid(3, 5, 6); // change to correct values
   }
 
   @Override

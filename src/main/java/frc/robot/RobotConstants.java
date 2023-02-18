@@ -93,4 +93,6 @@ public class RobotConstants {
     public enum Position {RIGHT, CENTER, LEFT}
     public static final Position position = Position.RIGHT;
     public static final boolean willBalance = true;
+
+    public static final double armMotorSpeed = 0.1;
 }
