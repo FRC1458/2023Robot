@@ -220,7 +220,9 @@ public class Robot extends TimedRobot {
   @Override 
   public void testInit() {
     reflective_tape = new Limelight(0);
-    Solenoid s = new Solenoid(1);
+    Solenoid s1 = new Solenoid(1, 1, 2); // change to correct values
+    Solenoid s2 = new Solenoid(2, 3, 4); // change to correct values
+    Solenoid s3 = new Solenoid(3, 5, 6); // change to correct values
   }
 
   @Override

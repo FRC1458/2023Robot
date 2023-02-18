@@ -1,10 +1,8 @@
 package frc.robot;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-//import edu.wpi.first.wpilibj.Solenoid;
+
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
 
 public class Solenoid {
     DoubleSolenoid solenoid;
@@ -13,7 +11,10 @@ public class Solenoid {
     PneumaticsModuleType type;
     int id;
 
-    public Solenoid(int id) {
+    public Solenoid(int id, int forwardChannel, int reverseChannel) {
+        this.forwardChannel = forwardChannel;
+        this.reverseChannel = reverseChannel;
+        type = PneumaticsModuleType.REVPH;
         solenoid = new DoubleSolenoid(type, forwardChannel, reverseChannel);
         this.id = id;
     }
