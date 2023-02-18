@@ -25,14 +25,14 @@ public class RobotConstants {
     public final static double kI = 0.000001;
     public final static double kD = 0.000001;
 
-    public final static double frontLeftXMeters = 0.273;
-    public final static double frontLeftYMeters = 0.273;
-    public final static double frontRightXMeters = 0.273;
-    public final static double frontRightYMeters = -0.273;
-    public final static double backLeftXMeters = -0.273;
-    public final static double backLeftYMeters = 0.273;
-    public final static double backRightXMeters = -0.273;
-    public final static double backRightYMeters = -0.273;
+    public final static double frontLeftXMeters = 0.28575;
+    public final static double frontLeftYMeters = 0.28575;
+    public final static double frontRightXMeters = 0.28575;
+    public final static double frontRightYMeters = -0.28575;
+    public final static double backLeftXMeters = -0.28575;
+    public final static double backLeftYMeters = 0.28575;
+    public final static double backRightXMeters = -0.28575;
+    public final static double backRightYMeters = -0.28575;
 
     public final static double swerveDriveGearRatio = 12.8;//THING WE ARE TESTING!!!
 
