@@ -89,4 +89,6 @@ public class RobotConstants {
     public final static double balanceSpeedSmall = 0.025;
 
     public final static double metersToSwerve = 0.0235;
+
+    public static String position = "center";//right, center, or left.
 }

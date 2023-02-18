@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     xboxController = new XboxControllerWrapper(0);
 
     navX = new AHRS(SPI.Port.kMXP);
-    armNavX = new ArmNavX(4.0);
+    armNavX = new ArmNavX(4);
     swerveDrive = new SwerveDrive(navX);
     lidar = new Lidar(RobotConstants.lidarPort);
     armLidar = new Lidar(RobotConstants.armLidarPort);

@@ -9,10 +9,10 @@ import java.util.ArrayList;
 public class ArmNavX{
 
   AHRS ahrs;
-  Double sampling = 4.0;
+    int sampling = 4;
   ArrayList<Float> buffer;
 
-  public ArmNavX(Double sampling) {
+  public ArmNavX(int sampling) {
     ahrs = new AHRS(I2C.Port.kOnboard);
     this.sampling = sampling;
   }
