@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
     swerveDrive = new SwerveDrive(navX);
     lidar = new Lidar(RobotConstants.lidarPort);
     armLidar = new Lidar(RobotConstants.armLidarPort);
-    limelight = new Limelight();
+    limelight = new Limelight(0);
 
     balancer = new Balancer(swerveDrive, navX);
     aligner = new Aligner(swerveDrive, limelight, lidar);
@@ -212,14 +212,19 @@ public class Robot extends TimedRobot {
     autonomous.autonomous();
   }
 
-  BaseLimelight reflective_tape;
+  Limelight reflective_tape;
   boolean pos = false;
   double iterate = 500;
   double thresh = 3;
-  @Override public void testInit() {
-    reflective_tape = new BaseLimelight(0);
+
+  @Override 
+  public void testInit() {
+    reflective_tape = new Limelight(0);
+    Solenoid s = new Solenoid(1);
   }
-  @Override public void testPeriodic() {
+
+  @Override
+  public void testPeriodic() {
     double x = 0.0;
     reflective_tape.display();
     double r = reflective_tape.get_rotation();
