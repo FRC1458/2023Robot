@@ -3,59 +3,39 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Autonomous {
-
-    private enum Positions {
-        RIGHT,
-        CENTER,
-        LEFT
-    }
-    private Positions position;
-    private boolean willBalance;
     private Balancer balancer;
 
-    public Autonomous(boolean willBalance, Balancer balancer) {
-        this.willBalance = willBalance;
+    public Autonomous(Balancer balancer) {
         this.balancer = balancer;
-        if (RobotConstants.position.equalsIgnoreCase("right")) {
-            position = Positions.RIGHT;
-        }
-        else if (RobotConstants.position.equalsIgnoreCase("center")) {
-            position = Positions.CENTER;
-        }
-        else if (RobotConstants.position.equalsIgnoreCase("left")) {
-            position = Positions.LEFT;
-        }
-        else {
-            SmartDashboard.putString("Autonomous Failure", "Invalid value for RobotConstants.position");
-        }
     }
 
     public void autonomous() {
-        switch (position) {
-            case LEFT:
-                left();
-                break;
-            case CENTER:
-                center();
-                break;
-            case RIGHT:
-                right();
-                break;
+        if(RobotConstants.position == RobotConstants.Position.LEFT) {
+            left();
+        }
+        else if (RobotConstants.position == RobotConstants.Position.CENTER) {
+            center();
+        }
+        else if (RobotConstants.position == RobotConstants.Position.RIGHT) {
+            right();
+        }
+        else {
+            SmartDashboard.putString("Wrong position", "It's an enum, how did you mess it up");
         }
     }
     //do initial scoring and possible second scoring later
     private void left() {
-        if (willBalance) {
+        if (RobotConstants.willBalance) {
             balancer.balance();
         }
     }
     private void center() {
-        if (willBalance) {
+        if (RobotConstants.willBalance) {
             balancer.balance();
         }
     }
     private void right() {
-        if (willBalance) {
+        if (RobotConstants.willBalance) {
             balancer.balance();
         }
     }

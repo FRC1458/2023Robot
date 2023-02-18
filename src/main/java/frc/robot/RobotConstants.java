@@ -90,5 +90,7 @@ public class RobotConstants {
 
     public final static double metersToSwerve = 0.0235;
 
-    public static String position = "center";//right, center, or left.
+    public enum Position {RIGHT, CENTER, LEFT}
+    public static final Position position = Position.RIGHT;
+    public static final boolean willBalance = true;
 }

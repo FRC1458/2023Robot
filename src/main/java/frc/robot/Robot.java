@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
   Limelight limelight;
   private final Balancer balancer;
   private final Aligner aligner;
+  private final Autonomous autonomous;
 
   private TalonFXWrapper arm;
 
@@ -66,6 +67,7 @@ public class Robot extends TimedRobot {
 
     balancer = new Balancer(swerveDrive, navX);
     aligner = new Aligner(swerveDrive, limelight, lidar);
+    autonomous = new Autonomous(balancer);
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
@@ -207,7 +209,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    balancer.balance();
+    autonomous.autonomous();
   }
 
   BaseLimelight reflective_tape;
