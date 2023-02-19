@@ -6,36 +6,22 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 public class Solenoid {
     DoubleSolenoid solenoid;
-    int forwardChannel;
-    int reverseChannel;
     PneumaticsModuleType type;
-    int id;
 
-    public Solenoid(int id, int forwardChannel, int reverseChannel) {
-        this.forwardChannel = forwardChannel;
-        this.reverseChannel = reverseChannel;
+    public Solenoid(int module, int forwardChannel, int reverseChannel) {
         type = PneumaticsModuleType.REVPH;
-        solenoid = new DoubleSolenoid(type, forwardChannel, reverseChannel);
-        this.id = id;
+        solenoid = new DoubleSolenoid(module, type, forwardChannel, reverseChannel);
     }
 
     public void forward() {
         solenoid.set(Value.kForward);
     }
 
-    public void backward() {
+    public void reverse() {
         solenoid.set(Value.kReverse);
     }
 
     public void off() {
         solenoid.set(Value.kOff);
-    }
-
-    public int getForwardChannel() {
-        return forwardChannel;
-    }
-
-    public int getReverseChannel() {
-        return reverseChannel;
     }
 }

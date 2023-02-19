@@ -30,27 +30,31 @@ public class Robot extends TimedRobot {
   private boolean arm3;
   private boolean arm2;
   private boolean arm1;
-  private boolean clawFalse;
-  private boolean clawTrue;
   private boolean fieldOriented;
+  private boolean clawOpen;
+  private boolean clawClose;
 
   private double regularSpeed;
   private double boostedSpeed; 
 
-  SwerveDrive swerveDrive;
+  //SwerveDrive swerveDrive;
   Lidar lidar;
   Lidar armLidar;
 
   Limelight limelight;
-  private final Balancer balancer;
-  private final Aligner aligner;
-  private final Autonomous autonomous;
+  //private final Balancer balancer;
+  //private final Aligner aligner;
+  //private final Autonomous autonomous;
 
-  private TalonFXWrapper arm;
+  private TalonFXWrapper armMotor;
 
   private final AHRS navX;
   private final ArmNavX armNavX;
 
+
+  Solenoid clawSolenoid = new Solenoid(4, 0, 1); // change to correct values
+  Solenoid armSolenoid = new Solenoid(4, 2, 3);
+  Arm arm;
 
   public Robot() {
     super(0.03);
@@ -60,19 +64,21 @@ public class Robot extends TimedRobot {
 
     navX = new AHRS(SPI.Port.kMXP);
     armNavX = new ArmNavX(4);
-    swerveDrive = new SwerveDrive(navX);
+    //swerveDrive = new SwerveDrive(navX);
     lidar = new Lidar(RobotConstants.lidarPort);
     armLidar = new Lidar(RobotConstants.armLidarPort);
     limelight = new Limelight(0);
 
-    balancer = new Balancer(swerveDrive, navX);
-    aligner = new Aligner(swerveDrive, limelight, lidar);
-    autonomous = new Autonomous(balancer);
+    //balancer = new Balancer(swerveDrive, navX);
+    //aligner = new Aligner(swerveDrive, limelight, lidar);
+    //autonomous = new Autonomous(balancer);
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
 
     fieldOriented = RobotConstants.fieldOriented;
+
+    arm = new Arm(clawSolenoid, armSolenoid, armNavX);
   }
   @Override
   public void robotInit() {
@@ -81,10 +87,12 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     state = States.MANUAL;
-    swerveDrive.resetNavX();
-    swerveDrive.setEncoders();
-    aligner.reset();
-    balancer.reset();
+
+
+    //swerveDrive.resetNavX();
+    //swerveDrive.setEncoders();
+    //aligner.reset();
+    //balancer.reset();
   }
   @Override
   public void teleopPeriodic() {
@@ -104,8 +112,6 @@ public class Robot extends TimedRobot {
 
     limelight.readPeriodic();
 
-    Solenoid armSolenoid = new Solenoid(1, 1, 2); // change to correct values
-    Solenoid clawSolenoid = new Solenoid(2, 3, 4); // change to correct values
 
     if (RobotConstants.controller == RobotConstants.ControllerType.XBOX) {
       xAxis = xboxController.getLeftX();
@@ -121,8 +127,8 @@ public class Robot extends TimedRobot {
       arm3 = xboxController.getYButton();
       arm2 = xboxController.getBButton();
       arm1 = xboxController.getAButton();//also used for stateManual
-      clawFalse = xboxController.getRightTriggerAxis() > 0.7;
-      clawTrue = xboxController.getLeftTriggerAxis() > 0.7;
+      clawOpen = xboxController.getRightTriggerAxis() > 0.7;
+      clawClose = xboxController.getLeftTriggerAxis() > 0.7;
     }
 
     else if (RobotConstants.controller == RobotConstants.ControllerType.JOYSTICK) {
@@ -139,25 +145,25 @@ public class Robot extends TimedRobot {
 
     if (arm3) {
       armState = 3;
-      clawSolenoid.forward();
+
     }
     else if (arm2) {
       armState = 2;
+
     }
     else if (arm1) {
       armState = 1;
     }
 
-    if (clawFalse) {
-      clawState = false;
-    }
-    else if (clawTrue) {
-      clawState = true;
+    if (clawClose) {
+      clawSolenoid.forward();
+    }  else if (clawOpen) {
+      clawSolenoid.reverse();
     }
 
     if (resetNavX) {
-      swerveDrive.resetNavX();
-      swerveDrive.setEncoders();
+      //swerveDrive.resetNavX();
+      //swerveDrive.setEncoders();
     }
 
     if (xboxController.getBackButtonPressed()) {
@@ -165,7 +171,7 @@ public class Robot extends TimedRobot {
     }
 
     if (lockWheels) {
-      swerveDrive.drive(0.01, 0, 0, true);
+      //swerveDrive.drive(0.01, 0, 0, true);
     }
 
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
@@ -196,24 +202,24 @@ public class Robot extends TimedRobot {
   }
 
   private void manual(double x, double y, double r) {
-    swerveDrive.drive(x, y, r, true);
+    //swerveDrive.drive(x, y, r, true);
   }
   private void align() {
-    aligner.align();
+    //aligner.align();
   }
   private void balance() {
-    balancer.balance();
+    //balancer.balance();
   }
   @Override
   public void autonomousInit() {
-    swerveDrive.resetNavX();
-    swerveDrive.setEncoders();
-    balancer.reset();
+    //swerveDrive.resetNavX();
+    //swerveDrive.setEncoders();
+    //balancer.reset();
   }
 
   @Override
   public void autonomousPeriodic() {
-    autonomous.autonomous();
+    //autonomous.autonomous();
   }
 
   Limelight reflective_tape;
@@ -234,6 +240,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("RequiredRotation", r);
     if (r > thresh) {x = 0.05;}
     if (r < -thresh) {x = -0.05;}
-    swerveDrive.drive(-x, 0, 0, false);
+    //swerveDrive.drive(-x, 0, 0, false);
   }
 }

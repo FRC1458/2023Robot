@@ -11,6 +11,7 @@ public class Arm {
     private TalonFXWrapper armMotor;
     private ArmNavX armnavx;
     private int direction = 1;
+    private boolean clawOpened;
 
     private enum armStates {
         TOP,
@@ -24,6 +25,7 @@ public class Arm {
         this.clawSolenoid = clawSolenoid;
         this.armnavx = armnavx;
         armMotor = new TalonFXWrapper(43);
+        clawOpened = false;
     }
 
     public void runArm() {
@@ -65,6 +67,14 @@ public class Arm {
 
         armMotor.set(0);
         armSolenoid.forward();
+    }
+
+    public void openClaw() {
+        clawSolenoid.forward();
+    }
+
+    public void closeClaw() {
+        clawSolenoid.reverse();
     }
 }
 
