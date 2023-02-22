@@ -24,4 +24,8 @@ public class TalonFXWrapper extends Wrapper {
     public void setNeutralMode(NeutralMode mode) {
         if (isInitialized) talon.setNeutralMode(mode);
     }
+
+    public double getEncoder() {
+        return talon.getSelectedSensorPosition();
+    }
 }

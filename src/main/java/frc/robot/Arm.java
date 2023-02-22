@@ -8,7 +8,7 @@ import frc.robot.wrappers.TalonFXWrapper;
 public class Arm {
     private Solenoid armSolenoid;
     private Solenoid clawSolenoid;
-    private TalonFXWrapper armMotor;
+    private final TalonFXWrapper armMotor;
     private ArmNavX armnavx;
     private int direction = 1;
     private boolean clawOpened;
@@ -26,6 +26,7 @@ public class Arm {
         this.armnavx = armnavx;
         armMotor = new TalonFXWrapper(43);
         clawOpened = false;
+
     }
 
     public void runArm() {
@@ -33,10 +34,10 @@ public class Arm {
     }
 
     public void bricked() {
-        if (armnavx.getPitch() > 62) {
+        if (armMotor.getEncoder() > 62) {
             direction = -1;
         }
-        else if (armnavx.getPitch() < 58) {
+        else if (armMotor.getEncoder() < 58) {
             direction = 1;
         } 
         else {
@@ -48,7 +49,7 @@ public class Arm {
     }
 
     public void erect() {
-        if (armnavx.getPitch() > 30) {
+        if (armMotor.getEncoder() > 30) {
             direction = -1;
         } else {
             direction = 1;
@@ -59,7 +60,7 @@ public class Arm {
     }
 
     public void flaccid() {
-        if (armnavx.getPitch() > -20) {
+        if (armMotor.getEncoder() > -20) {
             direction = -1;
         } else {
             direction = 1;
