@@ -42,9 +42,9 @@ public class Robot extends TimedRobot {
   Lidar armLidar;
 
   Limelight limelight;
-  //private final Balancer balancer;
-  //private final Aligner aligner;
-  //private final Autonomous autonomous;
+  private Balancer balancer;
+  private Aligner aligner;
+  private Autonomous autonomous;
 
   private TalonFXWrapper armMotor;
 
@@ -69,9 +69,9 @@ public class Robot extends TimedRobot {
     armLidar = new Lidar(RobotConstants.armLidarPort);
     limelight = new Limelight(0);
 
-    //balancer = new Balancer(swerveDrive, navX);
-    //aligner = new Aligner(swerveDrive, limelight, lidar);
-    //autonomous = new Autonomous(balancer);
+    balancer = new Balancer(swerveDrive, navX);
+    aligner = new Aligner(swerveDrive, limelight, lidar);
+    autonomous = new Autonomous(balancer);
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
@@ -91,8 +91,8 @@ public class Robot extends TimedRobot {
 
     swerveDrive.resetNavX();
     swerveDrive.setEncoders();
-    //aligner.reset();
-    //balancer.reset();
+    aligner.reset();
+    balancer.reset();
   }
   @Override
   public void teleopPeriodic() {
@@ -205,21 +205,21 @@ public class Robot extends TimedRobot {
     swerveDrive.drive(x, y, r, true);
   }
   private void align() {
-    //aligner.align();
+    aligner.align();
   }
   private void balance() {
-    //balancer.balance();
+    balancer.balance();
   }
   @Override
   public void autonomousInit() {
     swerveDrive.resetNavX();
     swerveDrive.setEncoders();
-    //balancer.reset();
+    balancer.reset();
   }
 
   @Override
   public void autonomousPeriodic() {
-    //autonomous.autonomous();
+    autonomous.autonomous();
   }
 
   Limelight reflective_tape;
