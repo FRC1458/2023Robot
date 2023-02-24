@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
   private double regularSpeed;
   private double boostedSpeed; 
 
-  //SwerveDrive swerveDrive;
+  SwerveDrive swerveDrive;
   Lidar lidar;
   Lidar armLidar;
 
@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
 
     navX = new AHRS(SPI.Port.kMXP);
     armNavX = new ArmNavX(4);
-    //swerveDrive = new SwerveDrive(navX);
+    swerveDrive = new SwerveDrive(navX);
     lidar = new Lidar(RobotConstants.lidarPort);
     armLidar = new Lidar(RobotConstants.armLidarPort);
     limelight = new Limelight(0);
@@ -89,8 +89,8 @@ public class Robot extends TimedRobot {
     state = States.MANUAL;
 
 
-    //swerveDrive.resetNavX();
-    //swerveDrive.setEncoders();
+    swerveDrive.resetNavX();
+    swerveDrive.setEncoders();
     //aligner.reset();
     //balancer.reset();
   }
@@ -162,8 +162,8 @@ public class Robot extends TimedRobot {
     }
 
     if (resetNavX) {
-      //swerveDrive.resetNavX();
-      //swerveDrive.setEncoders();
+      swerveDrive.resetNavX();
+      swerveDrive.setEncoders();
     }
 
     if (xboxController.getBackButtonPressed()) {
@@ -171,7 +171,7 @@ public class Robot extends TimedRobot {
     }
 
     if (lockWheels) {
-      //swerveDrive.drive(0.01, 0, 0, true);
+      swerveDrive.drive(0.01, 0, 0, true);
     }
 
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
@@ -202,7 +202,7 @@ public class Robot extends TimedRobot {
   }
 
   private void manual(double x, double y, double r) {
-    //swerveDrive.drive(x, y, r, true);
+    swerveDrive.drive(x, y, r, true);
   }
   private void align() {
     //aligner.align();
@@ -212,8 +212,8 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void autonomousInit() {
-    //swerveDrive.resetNavX();
-    //swerveDrive.setEncoders();
+    swerveDrive.resetNavX();
+    swerveDrive.setEncoders();
     //balancer.reset();
   }
 
@@ -240,6 +240,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("RequiredRotation", r);
     if (r > thresh) {x = 0.05;}
     if (r < -thresh) {x = -0.05;}
-    //swerveDrive.drive(-x, 0, 0, false);
+    swerveDrive.drive(-x, 0, 0, false);
   }
 }
