@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class RobotConstants {
     public final static boolean TalonFX = false;
-    public final static boolean Lidar1 = false;
+    public final static boolean Lidar1 = true;
     public final static boolean Lidar2 = false;
     public final static boolean navx = false;
     public final static boolean armNavx = false;
