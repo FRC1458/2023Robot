@@ -69,19 +69,7 @@ public class Arm {
         armMotor.set(0);
         armSolenoid.forward();
     }
-
-    public void setArm(int armState) {
-        if (armState == 1) {
-            flaccid();
-        }
-        else if (armState == 2) {
-            erect();
-        }
-        else if (armState == 3) {
-            bricked();
-        }
-        armState = 0;
-    }
+    
 
     public void openClaw() {
         clawSolenoid.forward();
@@ -96,3 +84,4 @@ public class Arm {
 // Bottom: -20
 // Middle: 20
 // Top: 60
+

@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
     limelight = new Limelight(0);
 
     balancer = new Balancer(swerveDrive, navX);
-    aligner = new Aligner(swerveDrive, limelight, lidar);
+    aligner = new Aligner(swerveDrive, limelight, lidar, arm);
     autonomous = new Autonomous(balancer);
 
     regularSpeed = RobotConstants.regularSpeed;
@@ -183,7 +183,7 @@ public class Robot extends TimedRobot {
         manual(x, y, r);
         break;
       case ALIGN:
-        align();
+        align(armState);
         break;
       case BALANCE:
         balance();
@@ -204,8 +204,8 @@ public class Robot extends TimedRobot {
   private void manual(double x, double y, double r) {
     swerveDrive.drive(x, y, r, true);
   }
-  private void align() {
-    aligner.align();
+  private void align(int armState) {
+    aligner.align(armState);
   }
   private void balance() {
     balancer.balance();
