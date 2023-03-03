@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
 
     arm = new Arm(clawSolenoid, armSolenoid, armNavX);
   }
+
   @Override
   public void robotInit() {
   }
@@ -105,10 +106,11 @@ public class Robot extends TimedRobot {
     int armState = 1; //1 is bottom, 2 is middle, 3 is lifted all the way
     boolean clawState = true; //true is open, false is closed
 
-    SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
-    SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
-    SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
-    SmartDashboard.putString("State", state.toString());
+
+    //SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
+    //SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
+    //SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
+    //SmartDashboard.putString("State", state.toString());
 
     limelight.readPeriodic();
 
@@ -180,7 +182,7 @@ public class Robot extends TimedRobot {
 
     switch(state) {
       case MANUAL:
-        manual(x, y, r);
+        manual(x, y, r, armState);
         break;
       case ALIGN:
         align(armState);
@@ -201,14 +203,17 @@ public class Robot extends TimedRobot {
     }
   }
 
-  private void manual(double x, double y, double r) {
+  private void manual(double x, double y, double r, int armState) {
     swerveDrive.drive(x, y, r, true);
+
+    if (armState == 3) {armState = arm.height();}
+
   }
   private void align(int armState) {
-    aligner.align(armState);
+    //aligner.align(armState);
   }
   private void balance() {
-    balancer.balance();
+    //balancer.balance();
   }
   @Override
   public void autonomousInit() {

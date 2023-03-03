@@ -26,7 +26,7 @@ public class ArmNavX{
     return ret;
   }
   public double getPitch() {
-    return ahrs.getPitch() * 3.0;
+    return ahrs.getPitch();
   }
 
   //public void autonomous() {}

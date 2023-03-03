@@ -1,14 +1,12 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.wrappers.TalonFXWrapper;
 
 public class Arm {
     private Solenoid armSolenoid;
     private Solenoid clawSolenoid;
-    private final TalonFXWrapper armMotor;
+    private TalonFXWrapper armMotor;
     private ArmNavX armnavx;
     private int direction = 1;
     private boolean clawOpened;
@@ -24,7 +22,7 @@ public class Arm {
         this.armSolenoid = armSolenoid;
         this.clawSolenoid = clawSolenoid;
         this.armnavx = armnavx;
-        armMotor = new TalonFXWrapper(43);
+        this.armMotor = new TalonFXWrapper(43);
         clawOpened = false;
 
     }
@@ -33,22 +31,26 @@ public class Arm {
 
     }
 
-    public void bricked() {
-        if (armMotor.getEncoder() > 62) {
-            direction = -1;
+    public int height() {
+        double pitch = armnavx.getPitch();
+        SmartDashboard.putNumber("Arm NavX Pitch", pitch);
+        if (pitch > 5) {
+            //pitch = armnavx.getPitch();
+            armMotor.set(0.25);
         }
-        else if (armMotor.getEncoder() < 58) {
-            direction = 1;
-        } 
+        else if (pitch < -5) {
+            //pitch = armnavx.getPitch();
+            armMotor.set(-0.25);
+        }
         else {
             direction = 0;
-            armSolenoid.forward();
+            armMotor.set(0.075);
+            return 1;
         }
-
-
+        return 3;
     }
 
-    public void erect() {
+    public void middle() {
         if (armMotor.getEncoder() > 30) {
             direction = -1;
         } else {
@@ -59,7 +61,7 @@ public class Arm {
         armSolenoid.forward();
     }
 
-    public void flaccid() {
+    public void down() {
         if (armMotor.getEncoder() > -20) {
             direction = -1;
         } else {

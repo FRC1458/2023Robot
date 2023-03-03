@@ -89,11 +89,11 @@ public class Aligner {
 
     public void setArm(int state) {
         if (state == 1) {
-            arm.flaccid();
+            arm.down();
         } else if (state == 2) {
-            arm.erect();
+            arm.middle();
         } else {
-            arm.bricked();
+            arm.height();
         }
     }
 
