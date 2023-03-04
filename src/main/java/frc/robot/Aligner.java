@@ -71,7 +71,6 @@ public class Aligner {
         if (timer.hasElapsed(xDistance * metersToSwerve * 10)) {//some value * xDistance, currently assumes swerve input is .1m/s
             state = States.SLOW;
         }
-        setArm(armState);//needs to be done asynchronously
     }
 
     private void slow() {
@@ -85,16 +84,6 @@ public class Aligner {
     private void stop() {
         timer.stop();
         //need to return to teleopPeriodic
-    }
-
-    public void setArm(int state) {
-        if (state == 1) {
-            arm.down();
-        } else if (state == 2) {
-            arm.middle();
-        } else {
-            arm.height();
-        }
     }
 
     public void reset() {

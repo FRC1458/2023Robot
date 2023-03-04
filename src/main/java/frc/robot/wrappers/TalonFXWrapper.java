@@ -9,10 +9,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 public class TalonFXWrapper extends Wrapper {
     TalonFX talon;
 
-    public TalonFXWrapper(int port) {
+    public TalonFXWrapper(int port, boolean brakeMode) {
         try{
             talon = new TalonFX(port);
             isInitialized = true;
+            if (brakeMode) {
+                talon.setNeutralMode(NeutralMode.Brake);
+            }
         }
         catch (RuntimeException ex ) {
             DriverStation.reportError("Error Initiating TalonFX:  " + ex.getMessage(), true);

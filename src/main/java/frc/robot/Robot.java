@@ -17,7 +17,16 @@ public class Robot extends TimedRobot {
       BALANCE
   }
 
+   enum ArmStates {
+    IDLE,
+    DOWN,
+    MIDDLE,
+    UP
+  }
+
   States state;
+
+  ArmStates armState;
   private JoystickWrapper leftStick;
   private JoystickWrapper rightStick;
   private XboxControllerWrapper xboxController;
@@ -33,6 +42,7 @@ public class Robot extends TimedRobot {
   private boolean fieldOriented;
   private boolean clawOpen;
   private boolean clawClose;
+  private boolean armExtend = false;
 
   private double regularSpeed;
   private double boostedSpeed; 
@@ -52,8 +62,8 @@ public class Robot extends TimedRobot {
   private final ArmNavX armNavX;
 
 
-  Solenoid clawSolenoid = new Solenoid(4, 0, 1); // change to correct values
-  Solenoid armSolenoid = new Solenoid(4, 2, 3);
+  Solenoid armSolenoid = new Solenoid(4, 0, 1); // change to correct values
+  Solenoid clawSolenoid = new Solenoid(4, 2, 3);
   Arm arm;
 
   public Robot() {
@@ -88,7 +98,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     state = States.MANUAL;
-
+    armState = ArmStates.IDLE;
 
     swerveDrive.resetNavX();
     swerveDrive.setEncoders();
@@ -103,14 +113,13 @@ public class Robot extends TimedRobot {
     double x,y,r,speedIncrease;
     speedIncrease = regularSpeed;
 
-    int armState = 1; //1 is bottom, 2 is middle, 3 is lifted all the way
     boolean clawState = true; //true is open, false is closed
 
 
-    //SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
-    //SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
-    //SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
-    //SmartDashboard.putString("State", state.toString());
+    SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
+    SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
+    SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
+    SmartDashboard.putString("State", state.toString());
 
     limelight.readPeriodic();
 
@@ -123,14 +132,20 @@ public class Robot extends TimedRobot {
       lockWheels = xboxController.getXButton();
       resetNavX = xboxController.getStartButton();
       stateManual = xboxController.getAButton();
-      stateAlign = xboxController.getRightBumper();
-      stateBalance = xboxController.getLeftBumper();
+      //stateAlign = xboxController.getRightBumper();
+      //stateBalance = xboxController.getLeftBumper();
 
       arm3 = xboxController.getYButton();
       arm2 = xboxController.getBButton();
       arm1 = xboxController.getAButton();//also used for stateManual
       clawOpen = xboxController.getRightTriggerAxis() > 0.7;
       clawClose = xboxController.getLeftTriggerAxis() > 0.7;
+      if (xboxController.getRightBumper()) {
+        armExtend = true;
+      }
+      else if (xboxController.getLeftBumper()) {
+        armExtend = false;
+      }
     }
 
     else if (RobotConstants.controller == RobotConstants.ControllerType.JOYSTICK) {
@@ -146,21 +161,22 @@ public class Robot extends TimedRobot {
     }
 
     if (arm3) {
-      armState = 3;
+      armState = ArmStates.UP;
 
     }
     else if (arm2) {
-      armState = 2;
+      armState = ArmStates.MIDDLE;
 
     }
     else if (arm1) {
-      armState = 1;
+      armState = ArmStates.DOWN;
     }
 
     if (clawClose) {
-      clawSolenoid.forward();
-    }  else if (clawOpen) {
-      clawSolenoid.reverse();
+      arm.closeClaw();
+    }
+    else if (clawOpen) {
+      arm.openClaw();
     }
 
     if (resetNavX) {
@@ -176,20 +192,39 @@ public class Robot extends TimedRobot {
       swerveDrive.drive(0.01, 0, 0, true);
     }
 
+    if (armExtend) {
+      arm.extendArm();
+    }
+    else {
+      arm.retractArm();
+    }
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
     y= Math.abs(yAxis)*yAxis * speedIncrease;
     r= Math.abs(rAxis)*rAxis * speedIncrease;
 
     switch(state) {
       case MANUAL:
-        manual(x, y, r, armState);
+        manual(x, y, r);
         break;
       case ALIGN:
-        align(armState);
+        align();
         break;
       case BALANCE:
         balance();
         break;
+    }
+
+    switch(armState) {
+      case IDLE:
+        idle();
+        break;
+      case UP:
+        up();
+        break;
+      case MIDDLE:
+        middle();
+        break;
+      case DOWN:
     }
 
     if (stateManual) {
@@ -203,17 +238,36 @@ public class Robot extends TimedRobot {
     }
   }
 
-  private void manual(double x, double y, double r, int armState) {
+  private void manual(double x, double y, double r) {
     swerveDrive.drive(x, y, r, true);
-
-    if (armState == 3) {armState = arm.height();}
-
   }
-  private void align(int armState) {
+  private void align() {
     //aligner.align(armState);
   }
   private void balance() {
     //balancer.balance();
+  }
+
+  private void idle() {
+    arm.idle();
+  }
+
+  private void up() {
+    if(arm.up()){
+      armState = ArmStates.IDLE;
+    }
+  }
+
+  private void middle() {
+    if(arm.middle()) {
+      armState = ArmStates.IDLE;
+    }
+  }
+
+  private void down() {
+    if(arm.down()) {
+      armState = ArmStates.IDLE;
+    }
   }
   @Override
   public void autonomousInit() {

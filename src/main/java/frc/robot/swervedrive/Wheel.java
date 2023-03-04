@@ -41,7 +41,7 @@ public class Wheel {
 
         pidController = angleMotor.getPIDController();
         encoder = angleMotor.getEncoder();
-        //SmartDashboard.putNumber("Rotations", 0);
+        SmartDashboard.putNumber("Rotations", 0);
 
         kP = RobotConstants.kP;
         kI = RobotConstants.kI;
@@ -65,9 +65,9 @@ public class Wheel {
         pidController.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
         pidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
 
-        //SmartDashboard.putNumber("P Gain", kP);
-        //SmartDashboard.putNumber("I Gain", kI);
-        //SmartDashboard.putNumber("D Gain", kD);
+        SmartDashboard.putNumber("P Gain", kP);
+        SmartDashboard.putNumber("I Gain", kI);
+        SmartDashboard.putNumber("D Gain", kD);
     }
 
     public void drive(double speed, double angle) {
@@ -102,11 +102,11 @@ public class Wheel {
 
         double realGoalRotations = (currentAngle - diff) * RobotConstants.swerveDriveGearRatio / 360;
 
-        //SmartDashboard.putNumber("Current Angle " + wheelName, currentAngle);
-        //SmartDashboard.putNumber("Goal Angle " + wheelName, goalAngle);
-        //SmartDashboard.putNumber("difference " + wheelName, diff);
-        //SmartDashboard.putNumber("SPEED " + wheelName + wheelName, speed);
-        //SmartDashboard.putNumber("Absolute Encoder Angle " + wheelName, (offset + getAbsoluteEncoderValue()) * (360 / RobotConstants.swerveDriveGearRatio));
+        SmartDashboard.putNumber("Current Angle " + wheelName, currentAngle);
+        SmartDashboard.putNumber("Goal Angle " + wheelName, goalAngle);
+        SmartDashboard.putNumber("difference " + wheelName, diff);
+        SmartDashboard.putNumber("SPEED " + wheelName + wheelName, speed);
+        SmartDashboard.putNumber("Absolute Encoder Angle " + wheelName, (offset + getAbsoluteEncoderValue()) * (360 / RobotConstants.swerveDriveGearRatio));
 
         if (speed != 0 || diagnostic) {
             pidController.setReference(realGoalRotations, CANSparkMax.ControlType.kPosition);

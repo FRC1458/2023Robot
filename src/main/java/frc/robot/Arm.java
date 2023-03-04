@@ -10,6 +10,7 @@ public class Arm {
     private ArmNavX armnavx;
     private int direction = 1;
     private boolean clawOpened;
+    private boolean armExtended;
 
     private enum armStates {
         TOP,
@@ -22,63 +23,80 @@ public class Arm {
         this.armSolenoid = armSolenoid;
         this.clawSolenoid = clawSolenoid;
         this.armnavx = armnavx;
-        this.armMotor = new TalonFXWrapper(43);
-        clawOpened = false;
-
+        armMotor = new TalonFXWrapper(43, true);
+        clawOpened = true;
+        armExtended = false;
     }
-
-    public void runArm() {
-
+    public void idle() {
+        armMotor.set(0);
     }
-
-    public int height() {
-        double pitch = armnavx.getPitch();
-        SmartDashboard.putNumber("Arm NavX Pitch", pitch);
-        if (pitch > 5) {
-            //pitch = armnavx.getPitch();
+    public boolean up() {
+        SmartDashboard.putNumber("Arm NavX Pitch", getPitch());
+        if (getPitch() > 2) {
             armMotor.set(0.25);
         }
-        else if (pitch < -5) {
-            //pitch = armnavx.getPitch();
+        else if (getPitch() < -2) {
             armMotor.set(-0.25);
         }
         else {
-            direction = 0;
-            armMotor.set(0.075);
-            return 1;
+            return true;
         }
-        return 3;
+        return false;
     }
 
-    public void middle() {
-        if (armMotor.getEncoder() > 30) {
-            direction = -1;
-        } else {
-            direction = 1;
+    public boolean middle() {
+        if (getPitch() > 32) {
+            armMotor.set(0.25);
         }
+        else if (getPitch() < 28) {
+            armMotor.set(-0.25);
+        }
+        else {
+            return true;
+        }
+        return false;
+    }
 
-        armMotor.set(0);
+    public boolean down() {
+        if (getPitch() > 62) {
+            armMotor.set(0.25);
+        }
+        else if (getPitch() < 58) {
+            armMotor.set(-0.25);
+        }
+        else {
+            return true;
+        }
+        return false;
+    }
+
+    public void toggleArm() {
+        if (armExtended) {
+            retractArm();
+        }
+        else {
+            extendArm();
+        }
+    }
+    public void extendArm() {
         armSolenoid.forward();
     }
-
-    public void down() {
-        if (armMotor.getEncoder() > -20) {
-            direction = -1;
-        } else {
-            direction = 1;
-        }
-
-        armMotor.set(0);
-        armSolenoid.forward();
+    public void retractArm() {
+        armSolenoid.reverse();
     }
-    
-
     public void openClaw() {
-        clawSolenoid.forward();
+        clawSolenoid.reverse();
+        clawOpened = true;
     }
 
     public void closeClaw() {
-        clawSolenoid.reverse();
+        if (clawOpened) {
+            clawSolenoid.forward();
+        }
+    }
+
+    private double getPitch() {
+        return armnavx.getPitch();
     }
 }
 
