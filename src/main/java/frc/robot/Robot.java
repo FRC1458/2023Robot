@@ -1,8 +1,10 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.swervedrive.SwerveDrive;
 import frc.robot.wrappers.JoystickWrapper;
@@ -21,7 +23,8 @@ public class Robot extends TimedRobot {
     IDLE,
     DOWN,
     MIDDLE,
-    UP
+    UP,
+    MANUAL
   }
 
   States state;
@@ -42,7 +45,10 @@ public class Robot extends TimedRobot {
   private boolean fieldOriented;
   private boolean clawOpen;
   private boolean clawClose;
+  private boolean rightBumper;
+  private boolean leftBumper;
   private boolean armExtend = false;
+  private int dpadValue;
 
   private double regularSpeed;
   private double boostedSpeed; 
@@ -60,9 +66,10 @@ public class Robot extends TimedRobot {
 
   private final AHRS navX;
   private final ArmNavX armNavX;
+  Timer timer = new Timer();
 
 
-  Solenoid armSolenoid = new Solenoid(4, 0, 1); // change to correct values
+  Solenoid armSolenoid = new Solenoid(4, 1, 0); // change to correct values
   Solenoid clawSolenoid = new Solenoid(4, 2, 3);
   Arm arm;
 
@@ -120,6 +127,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
     SmartDashboard.putString("State", state.toString());
+    SmartDashboard.putNumber("Arm Encoder", arm.getEncoder());
 
     limelight.readPeriodic();
 
@@ -140,11 +148,12 @@ public class Robot extends TimedRobot {
       arm1 = xboxController.getAButton();//also used for stateManual
       clawOpen = xboxController.getRightTriggerAxis() > 0.7;
       clawClose = xboxController.getLeftTriggerAxis() > 0.7;
-      if (xboxController.getRightBumper()) {
-        armExtend = true;
-      }
-      else if (xboxController.getLeftBumper()) {
+      dpadValue = xboxController.getPOV();
+      if (xboxController.getRightBumper() && (armNavX.getPitch() < 5)) {
         armExtend = false;
+      }
+      else if (xboxController.getLeftBumper() || (armNavX.getPitch() > 5)) {
+        armExtend = true;
       }
     }
 
@@ -160,16 +169,28 @@ public class Robot extends TimedRobot {
       rAxis = 0;
     }
 
-    if (arm3) {
+    if (dpadValue == 0 || dpadValue == 180) {
+      armState = ArmStates.MANUAL;
+    }
+    else if (arm3) {
       armState = ArmStates.UP;
 
     }
     else if (arm2) {
-      armState = ArmStates.MIDDLE;
-
+      if (!armExtend) {
+        armState = ArmStates.MIDDLE;
+      }
     }
     else if (arm1) {
-      armState = ArmStates.DOWN;
+      if (!armExtend) {
+        armState = ArmStates.DOWN;
+      }
+      else {
+        xboxController.setRumble(0.2);
+        Timer.delay(0.5);
+        xboxController.setRumble(0);
+
+      }
     }
 
     if (clawClose) {
@@ -198,6 +219,7 @@ public class Robot extends TimedRobot {
     else {
       arm.retractArm();
     }
+
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
     y= Math.abs(yAxis)*yAxis * speedIncrease;
     r= Math.abs(rAxis)*rAxis * speedIncrease;
@@ -225,6 +247,11 @@ public class Robot extends TimedRobot {
         middle();
         break;
       case DOWN:
+        down();
+        break;
+      case MANUAL:
+        manual();
+        break;
     }
 
     if (stateManual) {
@@ -267,6 +294,18 @@ public class Robot extends TimedRobot {
   private void down() {
     if(arm.down()) {
       armState = ArmStates.IDLE;
+    }
+  }
+
+  private void manual() {
+    if (dpadValue == 0) {
+      arm.moveUp();
+    }
+    else if (dpadValue == 180 && armNavX.getPitch() < 60) {//check max for extended arm
+      arm.moveDown();
+    }
+    else {
+      arm.idle();
     }
   }
   @Override

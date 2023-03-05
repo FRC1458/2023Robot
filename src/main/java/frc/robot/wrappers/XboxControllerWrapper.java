@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 //import jdk.internal.jline.console.completer.Completer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 
 public class XboxControllerWrapper extends Wrapper{
     
@@ -124,5 +125,9 @@ public class XboxControllerWrapper extends Wrapper{
     public boolean getBackButtonReleased() {
         if (isInitialized) return xbox.getBackButtonReleased();
         return false;
+    }
+
+    public void setRumble(double val) {
+        setRumble(val);
     }
 }

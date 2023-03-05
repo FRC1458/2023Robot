@@ -33,10 +33,10 @@ public class Arm {
     public boolean up() {
         SmartDashboard.putNumber("Arm NavX Pitch", getPitch());
         if (getPitch() > 2) {
-            armMotor.set(0.25);
+            armMotor.set(RobotConstants.armSpeed);
         }
         else if (getPitch() < -2) {
-            armMotor.set(-0.25);
+            armMotor.set(-1 * RobotConstants.armSpeed);
         }
         else {
             return true;
@@ -46,10 +46,10 @@ public class Arm {
 
     public boolean middle() {
         if (getPitch() > 32) {
-            armMotor.set(0.25);
+            armMotor.set(RobotConstants.armSpeed);
         }
         else if (getPitch() < 28) {
-            armMotor.set(-0.25);
+            armMotor.set(-1 * RobotConstants.armSpeed);
         }
         else {
             return true;
@@ -59,15 +59,22 @@ public class Arm {
 
     public boolean down() {
         if (getPitch() > 62) {
-            armMotor.set(0.25);
+            armMotor.set(RobotConstants.armSpeed);
         }
         else if (getPitch() < 58) {
-            armMotor.set(-0.25);
+            armMotor.set(-1 * RobotConstants.armSpeed);
         }
         else {
             return true;
         }
         return false;
+    }
+
+    public void moveUp() {
+        armMotor.set(RobotConstants.armSpeed);
+    }
+    public void moveDown() {
+        armMotor.set(-1 * RobotConstants.armSpeed);
     }
 
     public void toggleArm() {
@@ -97,6 +104,9 @@ public class Arm {
 
     private double getPitch() {
         return armnavx.getPitch();
+    }
+    public double getEncoder() {
+        return armMotor.getEncoder();
     }
 }
 
