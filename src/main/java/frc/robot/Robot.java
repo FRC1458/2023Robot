@@ -69,8 +69,8 @@ public class Robot extends TimedRobot {
   Timer timer = new Timer();
 
 
-  Solenoid armSolenoid = new Solenoid(4, 1, 0); // change to correct values
-  Solenoid clawSolenoid = new Solenoid(4, 3, 2);
+  Solenoid armSolenoid = new Solenoid(4, 3, 2); // change to correct values
+  Solenoid clawSolenoid = new Solenoid(4, 1, 0);
   Arm arm;
 
   public Robot() {
@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 
     fieldOriented = RobotConstants.fieldOriented;
 
-    arm = new Arm(clawSolenoid, armSolenoid, armNavX);
+    arm = new Arm(armSolenoid, clawSolenoid, armNavX);
   }
 
   @Override
