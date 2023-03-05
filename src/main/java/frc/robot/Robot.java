@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
 
 
   Solenoid armSolenoid = new Solenoid(4, 1, 0); // change to correct values
-  Solenoid clawSolenoid = new Solenoid(4, 2, 3);
+  Solenoid clawSolenoid = new Solenoid(4, 3, 2);
   Arm arm;
 
   public Robot() {
@@ -150,10 +150,10 @@ public class Robot extends TimedRobot {
       clawClose = xboxController.getLeftTriggerAxis() > 0.7;
       dpadValue = xboxController.getPOV();
       if (xboxController.getRightBumper() && (armNavX.getPitch() < 5)) {
-        armExtend = false;
+        armExtend = true;
       }
       else if (xboxController.getLeftBumper() || (armNavX.getPitch() > 5)) {
-        armExtend = true;
+        armExtend = false;
       }
     }
 

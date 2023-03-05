@@ -77,14 +77,6 @@ public class Arm {
         armMotor.set(-1 * RobotConstants.armSpeed);
     }
 
-    public void toggleArm() {
-        if (armExtended) {
-            retractArm();
-        }
-        else {
-            extendArm();
-        }
-    }
     public void extendArm() {
         armSolenoid.forward();
     }
