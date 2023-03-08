@@ -50,7 +50,7 @@ public class Wheel {
         kFF = 0.000156;
         kMaxOutput = 1;
         kMinOutput = -1;
-        maxRPM = 5700;
+        maxRPM = 5700;//5700
 
         pidController.setP(kP);
         pidController.setI(kI);
@@ -118,10 +118,15 @@ public class Wheel {
         SmartDashboard.putNumber(wheelName + " Talon", getAbsoluteEncoderValue());
     }
 
+    double ran = 0;
     public void setEncoders(double offset) {
-        encoder.setPosition(offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096) * RobotConstants.swerveDriveGearRatio / 4096.0);
+        //encoder.setPosition(offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096) * RobotConstants.swerveDriveGearRatio / 4096.0);//4096.0
+        SmartDashboard.putNumber(wheelName+" encoder.setPosition", (offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096) * RobotConstants.swerveDriveGearRatio / 4096.0));
         SwerveModuleState state = new SwerveModuleState(0.000000000001, Rotation2d.fromDegrees(0));
-        this.drive(state.speedMetersPerSecond, state.angle.getDegrees());
+        //this.drive(state.speedMetersPerSecond, state.angle.getDegrees());
+        SmartDashboard.putNumber(ran + " N Speed "+wheelName, state.speedMetersPerSecond);
+        SmartDashboard.putNumber(ran + "N Rot "+wheelName, state.angle.getDegrees());
+        ran++;
     }
 
     public double getAbsoluteEncoderValue() {

@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class ArmNavX{
     return ret;
   }
   public double getPitch() {
+    SmartDashboard.putNumber("ArmNavx Data", ahrs.getPitch());
     return ahrs.getPitch();
   }
 

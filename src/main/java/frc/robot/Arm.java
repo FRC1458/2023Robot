@@ -58,10 +58,10 @@ public class Arm {
     }
 
     public boolean down() {
-        if (getPitch() > 62) {
+        if (getPitch() > 55.5) {
             armMotor.set(RobotConstants.armSpeed);
         }
-        else if (getPitch() < 58) {
+        else if (getPitch() < 54.5) {
             armMotor.set(-1 * RobotConstants.armSpeed);
         }
         else {
