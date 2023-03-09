@@ -19,17 +19,7 @@ public class Robot extends TimedRobot {
       BALANCE
   }
 
-   enum ArmStates {
-    IDLE,
-    DOWN,
-    MIDDLE,
-    UP,
-    MANUAL
-  }
-
   States state;
-
-  ArmStates armState;
   private JoystickWrapper leftStick;
   private JoystickWrapper rightStick;
   private XboxControllerWrapper xboxController;
@@ -102,8 +92,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     state = States.MANUAL;
-    armState = ArmStates.IDLE;
-
     swerveDrive.resetNavX();
     swerveDrive.setEncoders();
     aligner.reset();
@@ -219,11 +207,18 @@ public class Robot extends TimedRobot {
     } else if (armBottom) {
       arm.setBottom();
     }
+    arm.runArm(armDown, armUp);
 
-    if (armUp) {
-      
-    } else {
+    if (armOpen) {
+      arm.extendArm();
+    } else if (armClose) {
+      arm.retractArm();
+    }
 
+    if (clawOpen) {
+      arm.openClaw();
+    } else if (clawClose) {
+      arm.closeClaw();
     }
   }
 
