@@ -8,15 +8,14 @@ public class Arm {
     private Solenoid clawSolenoid;
     private TalonFXWrapper armMotor;
     private ArmNavX armnavx;
-    private int direction = 1;
-    private boolean clawOpened;
-    private boolean armExtended;
+    private armStates state = armStates.IDLE;
+    private boolean armExtended = false;
 
     private enum armStates {
         TOP,
         MIDDLE,
         BOTTOM,
-        START
+        IDLE
     }
 
     public Arm(Solenoid armSolenoid, Solenoid clawSolenoid, ArmNavX armnavx) {
@@ -24,86 +23,109 @@ public class Arm {
         this.clawSolenoid = clawSolenoid;
         this.armnavx = armnavx;
         armMotor = new TalonFXWrapper(43, true);
-        clawOpened = true;
-        armExtended = false;
     }
+
     public void idle() {
         armMotor.set(0);
     }
-    public boolean up() {
-        SmartDashboard.putNumber("Arm NavX Pitch", getPitch());
-        if (getPitch() > 2) {
-            armMotor.set(RobotConstants.armSpeed);
+
+    public void runArm(boolean goDown, boolean goUp) {
+        if (goDown || goUp) {
+            state = armStates.IDLE;
         }
-        else if (getPitch() < -2) {
-            armMotor.set(-1 * RobotConstants.armSpeed);
+
+        switch (state) {
+            case TOP:
+                up();
+                break;
+            case MIDDLE:
+                middle();
+                break;
+            case BOTTOM:
+                down();
+                break;
+            case IDLE:
+                runManual(goDown, goUp);
+                break;
         }
-        else {
-            return true;
+
+        if (armnavx.getPitch() > 70) {
+            closeClaw();
         }
-        return false;
     }
 
-    public boolean middle() {
-        if (getPitch() > 32) {
-            armMotor.set(RobotConstants.armSpeed);
-        }
-        else if (getPitch() < 28) {
-            armMotor.set(-1 * RobotConstants.armSpeed);
-        }
-        else {
-            return true;
-        }
-        return false;
+    public void setUp() {
+        state = armStates.TOP;
     }
 
-    public boolean down() {
-        if (getPitch() > 55.5) {
-            armMotor.set(RobotConstants.armSpeed);
+    public void setMiddle() {
+        state = armStates.MIDDLE;
+    }
+    
+    public void setBottom() {
+        state = armStates.BOTTOM;
+    }
+
+    public void runManual(boolean goDown, boolean goUp) {
+        if (goDown && (armnavx.getPitch() < 57 || !armExtended)) {
+            moveDown();
+        } else if (goUp) {
+            moveUp();
         }
-        else if (getPitch() < 54.5) {
-            armMotor.set(-1 * RobotConstants.armSpeed);
+    }
+
+
+    public void up() {
+        moveToPreset(0);
+    }
+
+    public void middle() {
+        moveToPreset(30);
+    }
+
+    public void down() {
+        moveToPreset(55);
+    }
+
+    public void moveToPreset(double presetAngle) {
+        if (armnavx.getPitch() > presetAngle + 0.5) {
+            moveUp();
+        }
+        else if (armnavx.getPitch() < presetAngle - 0.5) {
+            moveDown();
         }
         else {
-            return true;
-        }
-        return false;
+            state = armStates.IDLE;
+        }      
     }
 
     public void moveUp() {
         armMotor.set(RobotConstants.armSpeed);
     }
+
     public void moveDown() {
         armMotor.set(-1 * RobotConstants.armSpeed);
     }
 
     public void extendArm() {
-        armSolenoid.forward();
-    }
-    public void retractArm() {
-        armSolenoid.reverse();
-    }
-    public void openClaw() {
-        clawSolenoid.reverse();
-        clawOpened = true;
-    }
-
-    public void closeClaw() {
-        if (clawOpened) {
-            clawSolenoid.forward();
+        if (armnavx.getPitch() < 57) {
+            armExtended = true;
+            armSolenoid.forward();
         }
     }
 
-    private double getPitch() {
-        return armnavx.getPitch();
+    public void retractArm() {
+        armExtended = false;
+        armSolenoid.reverse();
     }
-    public double getEncoder() {
-        return armMotor.getEncoder();
+
+    public void openClaw() {
+        if (armnavx.getPitch() < 67) {
+            clawSolenoid.reverse();
+        }
+    }
+
+    public void closeClaw() {
+        clawSolenoid.forward();
     }
 }
-
-// Starting: -60
-// Bottom: -20
-// Middle: 20
-// Top: 60
-

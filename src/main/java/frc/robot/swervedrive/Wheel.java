@@ -118,15 +118,11 @@ public class Wheel {
         SmartDashboard.putNumber(wheelName + " Talon", getAbsoluteEncoderValue());
     }
 
-    double ran = 0;
     public void setEncoders(double offset) {
-        //encoder.setPosition(offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096) * RobotConstants.swerveDriveGearRatio / 4096.0);//4096.0
+        encoder.setPosition(offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096) * RobotConstants.swerveDriveGearRatio / 4096.0);//4096.0
         SmartDashboard.putNumber(wheelName+" encoder.setPosition", (offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096) * RobotConstants.swerveDriveGearRatio / 4096.0));
         SwerveModuleState state = new SwerveModuleState(0.000000000001, Rotation2d.fromDegrees(0));
-        //this.drive(state.speedMetersPerSecond, state.angle.getDegrees());
-        SmartDashboard.putNumber(ran + " N Speed "+wheelName, state.speedMetersPerSecond);
-        SmartDashboard.putNumber(ran + "N Rot "+wheelName, state.angle.getDegrees());
-        ran++;
+        this.drive(state.speedMetersPerSecond, state.angle.getDegrees());
     }
 
     public double getAbsoluteEncoderValue() {

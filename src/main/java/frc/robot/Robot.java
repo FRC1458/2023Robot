@@ -39,14 +39,16 @@ public class Robot extends TimedRobot {
   private boolean stateAlign;
   private boolean stateBalance;
   private boolean resetNavX;
-  private boolean arm3;
-  private boolean arm2;
-  private boolean arm1;
+  private boolean armTop;
+  private boolean armMiddle;
+  private boolean armBottom;
   private boolean fieldOriented;
   private boolean clawOpen;
   private boolean clawClose;
-  private boolean armExtend = false;
-  private int dpadValue;
+  private boolean armOpen = false;
+  private boolean armClose = true;
+  private boolean armUp;
+  private boolean armDown;
 
   private double regularSpeed;
   private double boostedSpeed; 
@@ -115,14 +117,11 @@ public class Robot extends TimedRobot {
     double x,y,r,speedIncrease;
     speedIncrease = regularSpeed;
 
-    boolean clawState = true; //true is open, false is closed
-
-
     //SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
     SmartDashboard.putString("State", state.toString());
-    SmartDashboard.putNumber("Arm Encoder", arm.getEncoder());
+    //SmartDashboard.putNumber("Arm Encoder", arm.getEncoder());
 
     limelight.readPeriodic();
 
@@ -138,18 +137,25 @@ public class Robot extends TimedRobot {
       //stateAlign = xboxController.getRightBumper();
       //stateBalance = xboxController.getLeftBumper();
 
-      arm3 = xboxController.getYButton();
-      arm2 = xboxController.getBButton();
-      arm1 = xboxController.getAButton();//also used for stateManual
+      armTop = xboxController.getYButton();
+      armMiddle = xboxController.getBButton();
+      armTop = xboxController.getAButton(); // also used for stateManual
       clawOpen = xboxController.getLeftTriggerAxis() > 0.7;
       clawClose = xboxController.getRightTriggerAxis() > 0.7;
-      dpadValue = xboxController.getPOV();
-      if (xboxController.getRightBumper() && (armNavX.getPitch() < 55)) {
-        armExtend = true;
+
+      if (xboxController.getPOV() == 0) {
+        armUp = true;
+        armDown = false;
+      } else if (xboxController.getPOV() == 180) {
+        armDown = true;
+        armUp = false;
+      } else {
+        armUp = false;
+        armDown = false;
       }
-      else if (xboxController.getLeftBumper()) {
-        armExtend = false;
-      }
+
+      armOpen = xboxController.getRightBumper();
+      armClose = xboxController.getLeftBumper();
     }
 
     else if (RobotConstants.controller == RobotConstants.ControllerType.JOYSTICK) {
@@ -164,30 +170,6 @@ public class Robot extends TimedRobot {
       rAxis = 0;
     }
 
-    if (dpadValue == 0 || dpadValue == 180) {
-      armState = ArmStates.MANUAL;
-    }
-    else if (arm3) {
-      armState = ArmStates.UP;
-
-    }
-    else if (arm2) {
-      armState = ArmStates.MIDDLE;
-    }
-    else if (arm1) {
-        armState = ArmStates.DOWN;
-        //xboxController.setRumble(0.2);
-        //Timer.delay(0.5);
-        //xboxController.setRumble(0);
-    }
-
-    if (clawClose || armNavX.getPitch() > 70) {
-      arm.closeClaw();
-    }
-    else if (clawOpen && armNavX.getPitch() < 70) {
-      arm.openClaw();
-    }
-
     if (resetNavX) {
       swerveDrive.resetNavX();
       swerveDrive.setEncoders();
@@ -199,13 +181,6 @@ public class Robot extends TimedRobot {
 
     if (lockWheels) {
       swerveDrive.drive(0.01, 0, 0, true);
-    }
-
-    if (armExtend) {
-      arm.extendArm();
-    }
-    else {
-      arm.retractArm();
     }
 
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
@@ -224,24 +199,6 @@ public class Robot extends TimedRobot {
         break;
     }
 
-    switch(armState) {
-      case IDLE:
-        idle();
-        break;
-      case UP:
-        up();
-        break;
-      case MIDDLE:
-        middle();
-        break;
-      case DOWN:
-        down();
-        break;
-      case MANUAL:
-        manual();
-        break;
-    }
-
     if (stateManual) {
       state = States.MANUAL;
     }
@@ -251,51 +208,37 @@ public class Robot extends TimedRobot {
     else if (stateBalance) {
       state = States.BALANCE;
     }
+    runArm();
+  }
+
+  public void runArm() {
+    if (armTop) {
+      arm.setUp();
+    } else if (armMiddle) {
+      arm.setMiddle();
+    } else if (armBottom) {
+      arm.setBottom();
+    }
+
+    if (armUp) {
+      
+    } else {
+
+    }
   }
 
   private void manual(double x, double y, double r) {
     swerveDrive.drive(x, y, r, true);
   }
+
   private void align() {
     //aligner.align(armState);
   }
+
   private void balance() {
     //balancer.balance();
   }
 
-  private void idle() {
-    arm.idle();
-  }
-
-  private void up() {
-    if(arm.up()){
-      armState = ArmStates.IDLE;
-    }
-  }
-
-  private void middle() {
-    if(arm.middle()) {
-      armState = ArmStates.IDLE;
-    }
-  }
-
-  private void down() {
-    if(arm.down()) {
-      armState = ArmStates.IDLE;
-    }
-  }
-
-  private void manual() {
-    if (dpadValue == 0) {
-      arm.moveUp();
-    }
-    else if (dpadValue == 180 && ((armNavX.getPitch() < 55) || !armExtend)) {//check max for extended arm
-      arm.moveDown();
-    }
-    else {
-      arm.idle();
-    }
-  }
   @Override
   public void autonomousInit() {
     swerveDrive.resetNavX();
@@ -305,7 +248,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    autonomous.autonomous();
+    //autonomous.autonomous();
+    balancer.balance();
   }
 
   Limelight reflective_tape;

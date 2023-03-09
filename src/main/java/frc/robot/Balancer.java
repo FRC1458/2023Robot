@@ -70,7 +70,7 @@ public class Balancer {
     }
     
     private void forward() {
-        swerve.drive(0, -0.2, 0, true);
+        swerve.drive(0, -0.1, 0, true); //0,-0.2,0
         if (Math.abs(getPitch()) > RobotConstants.balancePitchStart) {
             nextState(States.CLIMB);
             return;
