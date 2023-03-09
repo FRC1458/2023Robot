@@ -94,5 +94,5 @@ public class RobotConstants {
     public static final Position position = Position.RIGHT;
     public static final boolean willBalance = true;
 
-    public static final double armSpeed = 0.4;
+    public static final double armSpeed = .25;
 }

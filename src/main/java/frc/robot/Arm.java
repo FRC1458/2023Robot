@@ -71,6 +71,8 @@ public class Arm {
             moveDown();
         } else if (goUp) {
             moveUp();
+        } else {
+            armMotor.set(0);
         }
     }
 
@@ -104,7 +106,9 @@ public class Arm {
     }
 
     public void moveDown() {
-        armMotor.set(-1 * RobotConstants.armSpeed);
+        if (armnavx.getPitch() < 90) {
+            armMotor.set(-1 * RobotConstants.armSpeed);
+        }
     }
 
     public void extendArm() {

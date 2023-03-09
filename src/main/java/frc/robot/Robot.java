@@ -1,15 +1,11 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.swervedrive.SwerveDrive;
 import frc.robot.wrappers.JoystickWrapper;
-import frc.robot.wrappers.TalonFXWrapper;
-import frc.robot.wrappers.XboxControllerWrapper;
 
 public class Robot extends TimedRobot {
 
@@ -22,23 +18,7 @@ public class Robot extends TimedRobot {
   States state;
   private JoystickWrapper leftStick;
   private JoystickWrapper rightStick;
-  private XboxControllerWrapper xboxController;
-
-  private boolean lockWheels;
-  private boolean stateManual;
-  private boolean stateAlign;
-  private boolean stateBalance;
-  private boolean resetNavX;
-  private boolean armTop;
-  private boolean armMiddle;
-  private boolean armBottom;
-  private boolean fieldOriented;
-  private boolean clawOpen;
-  private boolean clawClose;
-  private boolean armOpen = false;
-  private boolean armClose = true;
-  private boolean armUp;
-  private boolean armDown;
+  private Controller controller;
 
   private double regularSpeed;
   private double boostedSpeed; 
@@ -64,7 +44,7 @@ public class Robot extends TimedRobot {
     super(0.03);
     //leftStick = new JoystickWrapper(0);//uncomment if using them
     //rightStick = new JoystickWrapper(1);
-    xboxController = new XboxControllerWrapper(0);
+    controller = new XboxController();
 
     navX = new AHRS(SPI.Port.kMXP);
     armNavX = new ArmNavX(4);
@@ -79,8 +59,6 @@ public class Robot extends TimedRobot {
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
-
-    fieldOriented = RobotConstants.fieldOriented;
 
     arm = new Arm(armSolenoid, clawSolenoid, armNavX);
   }
@@ -113,61 +91,17 @@ public class Robot extends TimedRobot {
 
     limelight.readPeriodic();
 
+    xAxis = controller.getSwerveX();
+    yAxis = controller.getSwerveY();
+    rAxis = controller.getSwerveR();
 
-    if (RobotConstants.controller == RobotConstants.ControllerType.XBOX) {
-      xAxis = xboxController.getLeftX();
-      yAxis = xboxController.getLeftY();
-      rAxis = xboxController.getRightX();
-
-      lockWheels = xboxController.getXButton();
-      resetNavX = xboxController.getStartButton();
-      stateManual = xboxController.getAButton();
-      //stateAlign = xboxController.getRightBumper();
-      //stateBalance = xboxController.getLeftBumper();
-
-      armTop = xboxController.getYButton();
-      armMiddle = xboxController.getBButton();
-      armTop = xboxController.getAButton(); // also used for stateManual
-      clawOpen = xboxController.getLeftTriggerAxis() > 0.7;
-      clawClose = xboxController.getRightTriggerAxis() > 0.7;
-
-      if (xboxController.getPOV() == 0) {
-        armUp = true;
-        armDown = false;
-      } else if (xboxController.getPOV() == 180) {
-        armDown = true;
-        armUp = false;
-      } else {
-        armUp = false;
-        armDown = false;
-      }
-
-      armOpen = xboxController.getRightBumper();
-      armClose = xboxController.getLeftBumper();
-    }
-
-    else if (RobotConstants.controller == RobotConstants.ControllerType.JOYSTICK) {
-      xAxis = leftStick.getRawAxis(0);
-      yAxis = leftStick.getRawAxis(1);
-      rAxis = leftStick.getRawAxis(3);
-      resetNavX = rightStick.getRawButton(4);
-    }
-    else {
-      xAxis = 0;
-      yAxis = 0;
-      rAxis = 0;
-    }
-
-    if (resetNavX) {
+    if (controller.resetNavX()) {
       swerveDrive.resetNavX();
       swerveDrive.setEncoders();
     }
 
-    if (xboxController.getBackButtonPressed()) {
-      fieldOriented = !fieldOriented;
-    }
 
-    if (lockWheels) {
+    if (controller.lockWheels()) {
       swerveDrive.drive(0.01, 0, 0, true);
     }
 
@@ -187,37 +121,37 @@ public class Robot extends TimedRobot {
         break;
     }
 
-    if (stateManual) {
+    if (controller.stateManual()) {
       state = States.MANUAL;
     }
-    else if (stateAlign) {
+    else if (controller.stateAlign()) {
       state = States.ALIGN;
     }
-    else if (stateBalance) {
+    else if (controller.stateBalance()) {
       state = States.BALANCE;
     }
     runArm();
   }
 
   public void runArm() {
-    if (armTop) {
+    if (controller.armTop()) {
       arm.setUp();
-    } else if (armMiddle) {
+    } else if (controller.armMiddle()) {
       arm.setMiddle();
-    } else if (armBottom) {
+    } else if (controller.armBottom()) {
       arm.setBottom();
     }
-    arm.runArm(armDown, armUp);
+    arm.runArm(controller.armDown(), controller.armUp());
 
-    if (armOpen) {
+    if (controller.armExtend()) {
       arm.extendArm();
-    } else if (armClose) {
+    } else if (controller.armRetract()) {
       arm.retractArm();
     }
 
-    if (clawOpen) {
+    if (controller.clawOpen()) {
       arm.openClaw();
-    } else if (clawClose) {
+    } else if (controller.clawClose()) {
       arm.closeClaw();
     }
   }
