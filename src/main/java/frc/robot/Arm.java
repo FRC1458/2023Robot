@@ -87,6 +87,9 @@ public class Arm {
 
     public void down() {
         moveToPreset(55);
+        if (!armExtended) {
+            extendArm();
+        }
     }
 
     public void moveToPreset(double presetAngle) {
@@ -102,12 +105,20 @@ public class Arm {
     }
 
     public void moveUp() {
-        armMotor.set(RobotConstants.armSpeed);
+        if (armnavx.getPitch() > -10) {
+            armMotor.set(RobotConstants.armSpeed);
+        }
+        else {
+            armMotor.set(0);
+        }
     }
 
     public void moveDown() {
         if (armnavx.getPitch() < 90) {
             armMotor.set(-1 * RobotConstants.armSpeed);
+        }
+        else {
+            armMotor.set(0);
         }
     }
 
