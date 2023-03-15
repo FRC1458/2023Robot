@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
   private Controller controller;
 
   private double regularSpeed;
-  private double boostedSpeed; 
+  private double boostedSpeed;
 
   SwerveDrive swerveDrive;
   Lidar lidar;
@@ -34,7 +34,6 @@ public class Robot extends TimedRobot {
 
   private final AHRS navX;
   private final ArmNavX armNavX;
-
 
   Solenoid armSolenoid = new Solenoid(4, 3, 2); // change to correct values
   Solenoid clawSolenoid = new Solenoid(4, 1, 0);
@@ -59,6 +58,8 @@ public class Robot extends TimedRobot {
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
+
+    arm = new Arm(armSolenoid, clawSolenoid, armNavX);
   }
 
   @Override

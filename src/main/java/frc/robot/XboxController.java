@@ -16,12 +16,12 @@ public class XboxController implements Controller {
 
     @Override
     public boolean stateManual() {
-        return true;
+        return xbox.getPOV()==270;
     }
 
     @Override
     public boolean stateAlign() {
-        return false;
+        return xbox.getPOV()==90;
     }
 
     @Override
