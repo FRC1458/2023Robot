@@ -30,6 +30,9 @@ public class ArmNavX{
     SmartDashboard.putNumber("ArmNavx Data", ahrs.getPitch());
     return ahrs.getPitch();
   }
+  public void reset() {
+    ahrs.reset();
+  }
 
   //public void autonomous() {}
   //public void test() {}

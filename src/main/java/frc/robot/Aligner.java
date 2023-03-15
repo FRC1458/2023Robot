@@ -16,7 +16,6 @@ public class Aligner {
     private final Timer timer;
     private final Limelight limelight;
     private final Lidar lidar;
-    private final Arm arm;
 
     private final double metersToSwerve =  RobotConstants.metersToSwerve;//multiply by meters to give a value to input to swerve
     private double testOffset = 0.01; //Multiplies to slow bot for testing for safety
@@ -26,23 +25,21 @@ public class Aligner {
     private final double yFinalDistance = 0.61;//in m, distance from robot to base of scoring area, add to RobotConstants
     private States state = States.START;
 
-    private int armState;
 
-    public Aligner(SwerveDrive swerve, Limelight limelight, Lidar lidar, Arm arm) {
+    public Aligner(SwerveDrive swerve, Limelight limelight, Lidar lidar ) {
         timer = new Timer();
         this.swerve = swerve;
         this.limelight = limelight;
         this.lidar = lidar;
-        this.arm = arm;
     }
 
-    public boolean align(int armState) {
+    public boolean align() {
         switch (state) {
             case START:
                 start();
                 break;
             case MOVE:
-                move(armState);
+                move();
                 break;
             case SLOW:
                 slow();
@@ -63,7 +60,7 @@ public class Aligner {
     }
 //-.1 for metersToSwerve * 10, -.1*xDistance for xDistance*metersToSwerve * 10
 //Speeds divided by 100 for testing
-    private void move(int armState) {
+    private void move() {
         timer.start();
         if (xDistance < 10) {//Just to be safe, remove if testing outdoors
             swerve.drive(-0.1 * testOffset, -0.1 * xDistance * testOffset, 0, true); //change to higher speed, multiply by sign of xDistance

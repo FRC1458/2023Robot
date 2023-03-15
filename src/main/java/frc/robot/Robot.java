@@ -54,13 +54,11 @@ public class Robot extends TimedRobot {
     limelight = new Limelight(0);
 
     balancer = new Balancer(swerveDrive, navX);
-    aligner = new Aligner(swerveDrive, limelight, lidar, arm);
+    aligner = new Aligner(swerveDrive, limelight, lidar);
     autonomous = new Autonomous(balancer);
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
-
-    arm = new Arm(armSolenoid, clawSolenoid, armNavX);
   }
 
   @Override
@@ -74,6 +72,7 @@ public class Robot extends TimedRobot {
     swerveDrive.setEncoders();
     aligner.reset();
     balancer.reset();
+    armNavX.reset();
   }
   @Override
   public void teleopPeriodic() {
@@ -161,7 +160,7 @@ public class Robot extends TimedRobot {
   }
 
   private void align() {
-    //aligner.align(armState);
+    aligner.align();
   }
 
   private void balance() {
