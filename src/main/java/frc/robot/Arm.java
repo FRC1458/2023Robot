@@ -1,15 +1,13 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.wrappers.TalonFXWrapper;
-import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 
 public class Arm {
-    private Solenoid armSolenoid;
-    private Solenoid clawSolenoid;
-    private TalonFXWrapper armMotor;
-    private ArmNavX armnavx;
+    private final Solenoid armSolenoid;
+    private final Solenoid clawSolenoid;
+    private final TalonFXWrapper armMotor;
+    private final ArmNavX armnavx;
     private armStates state = armStates.IDLE;
     private boolean armExtended = false;
 
@@ -26,21 +24,19 @@ public class Arm {
         this.armnavx = armnavx;
         armMotor = new TalonFXWrapper(43, true);
     }
-
-    public void idle() {
-        armMotor.set(0);
-    }
     
-    public double get_position() {
+    public double encoderPosition() {
         TalonFXSensorCollection sensors = armMotor.talon.getSensorCollection();
-        Double abs_position = sensors.getIntegratedSensorPosition();
-        return abs_position * RobotConstants.armEncRatio;
+        double absPos = sensors.getIntegratedSensorPosition();
+        System.out.println("ArmNavX: " + (90-armnavx.getPitch()));
+        System.out.print("Encoder: " + absPos*RobotConstants.armEncoderRatio);
+        return absPos * RobotConstants.armEncoderRatio;
     }
 
     public void reset() {
         armnavx.reset();
         TalonFXSensorCollection sensors = armMotor.talon.getSensorCollection();
-        double new_position = 90 - armnavx.getPitch() / RobotConstants.armEncRatio;
+        double new_position = 90 - armnavx.getPitch() / RobotConstants.armEncoderRatio;
         sensors.setIntegratedSensorPosition(new_position, 0);
     }
 

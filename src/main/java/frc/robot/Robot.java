@@ -151,7 +151,7 @@ public class Robot extends TimedRobot {
       arm.closeClaw();
     }
 
-    SmartDashboard.putNumber("Arm Position", arm.get_position());
+    SmartDashboard.putNumber("Arm Position", arm.encoderPosition());
 
   }
 
