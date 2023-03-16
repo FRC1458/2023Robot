@@ -69,12 +69,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     state = States.MANUAL;
-    swerveDrive.resetNavX();
-    swerveDrive.setEncoders();
-    aligner.reset();
-    balancer.reset();
-    armNavX.reset();
+    superiorReset();
   }
+
   @Override
   public void teleopPeriodic() {
     double xAxis;
@@ -96,8 +93,7 @@ public class Robot extends TimedRobot {
     rAxis = controller.getSwerveR();
 
     if (controller.resetNavX()) {
-      swerveDrive.resetNavX();
-      swerveDrive.setEncoders();
+      superiorReset();
     }
 
 
@@ -154,6 +150,9 @@ public class Robot extends TimedRobot {
     } else if (controller.clawClose()) {
       arm.closeClaw();
     }
+
+    SmartDashboard.putNumber("Arm Position", arm.get_position());
+
   }
 
   private void manual(double x, double y, double r) {
@@ -170,9 +169,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    swerveDrive.resetNavX();
-    swerveDrive.setEncoders();
-    balancer.reset();
+    superiorReset();
   }
 
   @Override
@@ -181,11 +178,6 @@ public class Robot extends TimedRobot {
     balancer.balance();
   }
 
-  Limelight reflective_tape;
-  boolean pos = false;
-  double iterate = 500;
-  double thresh = 3;
-
   @Override 
   public void testInit() {
     swerveDrive.setEncoders();
@@ -193,5 +185,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
+  }
+
+  public void superiorReset() {
+    swerveDrive.resetNavX();
+    swerveDrive.setEncoders();
+    balancer.reset();
+    arm.reset();
   }
 }

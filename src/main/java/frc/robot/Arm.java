@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.wrappers.TalonFXWrapper;
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 
 public class Arm {
     private Solenoid armSolenoid;
@@ -27,6 +29,19 @@ public class Arm {
 
     public void idle() {
         armMotor.set(0);
+    }
+    
+    public double get_position() {
+        TalonFXSensorCollection sensors = armMotor.talon.getSensorCollection();
+        Double abs_position = sensors.getIntegratedSensorPosition();
+        return abs_position * RobotConstants.armEncRatio;
+    }
+
+    public void reset() {
+        armnavx.reset();
+        TalonFXSensorCollection sensors = armMotor.talon.getSensorCollection();
+        double new_position = 90 - armnavx.getPitch() / RobotConstants.armEncRatio;
+        sensors.setIntegratedSensorPosition(new_position, 0);
     }
 
     public void runArm(boolean goDown, boolean goUp) {

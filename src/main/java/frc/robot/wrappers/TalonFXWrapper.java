@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 
 public class TalonFXWrapper extends Wrapper {
-    TalonFX talon;
+    
+    public TalonFX talon;
 
     public TalonFXWrapper(int port, boolean brakeMode) {
         try{

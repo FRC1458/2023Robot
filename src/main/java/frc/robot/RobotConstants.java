@@ -6,6 +6,8 @@ public class RobotConstants {
     public enum ControllerType {XBOX, JOYSTICK}
     public static final ControllerType controller = ControllerType.XBOX;
 
+    public final static double armEncRatio = 360 / 4096 / 100 / 4;
+
     public final static int frontLeftAngleID = 19;
     public final static int frontRightAngleID = 15;
     public final static int backLeftAngleID = 13;
