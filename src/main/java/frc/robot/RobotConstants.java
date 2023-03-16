@@ -36,30 +36,8 @@ public class RobotConstants {
     public final static double backRightXMeters = -0.28575;
     public final static double backRightYMeters = -0.28575;
 
-    public final static double swerveDriveGearRatio = 12.8;//THING WE ARE TESTING!!!
+    public final static double swerveDriveGearRatio = 12.8;
 
-    // public final static int intakeMotorID = 29;
-    // public final static int rightElevatorMotorID = 36;
-    // public final static int leftElevatorMotorID = 37;
-    // public final static int leftDepositorMotorID = 27;
-    // public final static int rightDepositorMotorID = 23;
-
-    public final static int intakeSolenoidForwardID = 10;
-    public final static int intakeSolenoidReverseID = 11;
-    // public final static int rightIntakeSolenoidForwardID = 0;
-    // public final static int rightIntakeSolenoidReverseID = 0;
-    public final static int elevatorSolenoidForwardID = 8;
-    public final static int elevatorSolenoidReverseID = 9;
-    // public final static int rightElevatorSolenoidForwardID = 0;
-    // public final static int rightElevatorSolenoidReverseID = 0;
-
-    public final static int bottomLimitSwitchID = 8;
-    public final static int middleLimitSwitchID = 6;
-    public final static int topLimitSwitchID = 7;
-
-    public final static double elevSpeedUp = .35;
-    public final static double elevSpeedDown = .2;
-    public final static double elevSpeedManual = .15;
     public final static double regularSpeed = .75;
     public final static double boostedSpeed = .75;
 
