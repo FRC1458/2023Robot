@@ -96,6 +96,9 @@ public class Robot extends TimedRobot {
       superiorReset();
     }
 
+    if (controller.resetArm()) {
+      arm.reset();
+    }
 
     if (controller.lockWheels()) {
       swerveDrive.drive(0.01, 0, 0, true);
@@ -191,6 +194,5 @@ public class Robot extends TimedRobot {
     swerveDrive.resetNavX();
     swerveDrive.setEncoders();
     balancer.reset();
-    arm.reset();
   }
 }

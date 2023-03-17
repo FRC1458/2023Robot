@@ -6,6 +6,9 @@ public interface Controller {
      boolean stateAlign();
      boolean stateBalance();
      boolean resetNavX();
+
+     boolean resetArm();
+
      boolean armTop();
      boolean armMiddle();
      boolean armBottom();

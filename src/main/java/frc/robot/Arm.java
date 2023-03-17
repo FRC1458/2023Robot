@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.wrappers.TalonFXWrapper;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 
@@ -7,7 +8,6 @@ public class Arm {
     private final Solenoid armSolenoid;
     private final Solenoid clawSolenoid;
     private final TalonFXWrapper armMotor;
-    private final ArmNavX armnavx;
     private armStates state = armStates.IDLE;
     private boolean armExtended = false;
 
@@ -21,22 +21,21 @@ public class Arm {
     public Arm(Solenoid armSolenoid, Solenoid clawSolenoid, ArmNavX armnavx) {
         this.armSolenoid = armSolenoid;
         this.clawSolenoid = clawSolenoid;
-        this.armnavx = armnavx;
         armMotor = new TalonFXWrapper(43, true);
+        retractArm();
     }
     
     public double encoderPosition() {
         TalonFXSensorCollection sensors = armMotor.talon.getSensorCollection();
-        double absPos = sensors.getIntegratedSensorPosition();
-        System.out.println("ArmNavX: " + (90-armnavx.getPitch()));
-        System.out.print("Encoder: " + absPos*RobotConstants.armEncoderRatio);
-        return absPos * RobotConstants.armEncoderRatio;
+        double absPos = sensors.getIntegratedSensorPosition() * RobotConstants.armEncoderRatio;
+        System.out.print("Encoder: " + absPos);
+        SmartDashboard.putNumber("Arm encoder: ", absPos);
+        return absPos;
     }
 
     public void reset() {
-        armnavx.reset();
         TalonFXSensorCollection sensors = armMotor.talon.getSensorCollection();
-        double new_position = 90 - armnavx.getPitch() / RobotConstants.armEncoderRatio;
+        double new_position = 5 / RobotConstants.armEncoderRatio;
         sensors.setIntegratedSensorPosition(new_position, 0);
     }
 
@@ -60,7 +59,7 @@ public class Arm {
                 break;
         }
 
-        if (armnavx.getPitch() > 70) {
+        if (encoderPosition() < 38) {
             closeClaw();
         }
     }
@@ -78,7 +77,7 @@ public class Arm {
     }
 
     public void runManual(boolean goDown, boolean goUp) {
-        if (goDown && (armnavx.getPitch() < 57 || !armExtended)) {
+        if (goDown && (encoderPosition() > 52 || !armExtended)) {
             moveDown();
         } else if (goUp) {
             moveUp();
@@ -89,25 +88,25 @@ public class Arm {
 
 
     public void up() {
-        moveToPreset(0);
+        moveToPreset(105);
     }
 
     public void middle() {
-        moveToPreset(30);
+        moveToPreset(90);
     }
 
     public void down() {
-        moveToPreset(55);
+        moveToPreset(54);
         if (!armExtended) {
             extendArm();
         }
     }
 
     public void moveToPreset(double presetAngle) {
-        if (armnavx.getPitch() > presetAngle + 0.5) {
+        if (encoderPosition() < presetAngle - 1.5) {
             moveUp();
         }
-        else if (armnavx.getPitch() < presetAngle - 0.5) {
+        else if (encoderPosition() > presetAngle + 1.5) {
             moveDown();
         }
         else {
@@ -116,25 +115,19 @@ public class Arm {
     }
 
     public void moveUp() {
-        if (armnavx.getPitch() > -10) {
+        if (encoderPosition() < 120) {
             armMotor.set(RobotConstants.armSpeed);
-        }
-        else {
+        } else {
             armMotor.set(0);
         }
     }
 
     public void moveDown() {
-        if (armnavx.getPitch() < 90) {
-            armMotor.set(-1 * RobotConstants.armSpeed);
-        }
-        else {
-            armMotor.set(0);
-        }
+        armMotor.set(-1 * RobotConstants.armSpeed);
     }
 
     public void extendArm() {
-        if (armnavx.getPitch() < 57) {
+        if (encoderPosition() > 33) {
             armExtended = true;
             armSolenoid.forward();
         }
@@ -146,7 +139,7 @@ public class Arm {
     }
 
     public void openClaw() {
-        if (armnavx.getPitch() < 67) {
+        if (encoderPosition() > 23) {
             clawSolenoid.reverse();
         }
     }

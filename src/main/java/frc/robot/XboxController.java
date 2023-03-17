@@ -35,6 +35,11 @@ public class XboxController implements Controller {
     }
 
     @Override
+    public boolean resetArm() {
+        return xbox.getBackButtonPressed();
+    }
+
+    @Override
     public boolean armTop() {
         return xbox.getYButton();
     }
