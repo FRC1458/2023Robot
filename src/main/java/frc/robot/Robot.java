@@ -24,7 +24,6 @@ public class Robot extends TimedRobot {
   private double boostedSpeed;
 
   SwerveDrive swerveDrive;
-  Lidar lidar;
   Lidar armLidar;
 
   Limelight limelight;
@@ -53,7 +52,7 @@ public class Robot extends TimedRobot {
     limelight = new Limelight(0);
 
     balancer = new Balancer(swerveDrive, navX);
-    aligner = new Aligner(swerveDrive, limelight, lidar);
+    aligner = new Aligner(swerveDrive, limelight);
     autonomous = new Autonomous(balancer);
 
     regularSpeed = RobotConstants.regularSpeed;
@@ -113,12 +112,12 @@ public class Robot extends TimedRobot {
         manual(x, y, r);
         break;
       case ALIGN:
-        align();
         break;
       case BALANCE:
-        balance();
         break;
     }
+
+    aligner.align();
 
     if (controller.stateManual()) {
       state = States.MANUAL;
@@ -130,6 +129,7 @@ public class Robot extends TimedRobot {
       state = States.BALANCE;
     }
     runArm();
+
   }
 
   public void runArm() {
@@ -162,14 +162,6 @@ public class Robot extends TimedRobot {
     swerveDrive.drive(x, y, r, true);
   }
 
-  private void align() {
-    aligner.align();
-  }
-
-  private void balance() {
-    //balancer.balance();
-  }
-
   @Override
   public void autonomousInit() {
     superiorReset();
@@ -187,8 +179,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
   public void superiorReset() {
     swerveDrive.resetNavX();

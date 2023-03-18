@@ -95,26 +95,11 @@ public class SwerveDrive {
 
     }
 
-    public void setEncoders2() {
-        frontLeft.setEncoders(SmartDashboard.getNumber("front left offset", 0));
-        frontRight.setEncoders(SmartDashboard.getNumber("front right offset", 0));
-        backLeft.setEncoders(SmartDashboard.getNumber("back left offset", 0));
-        backRight.setEncoders(SmartDashboard.getNumber("back right offset", 0));
-    }
-
     public void setEncoders() {
         frontLeft.setEncoders(RobotConstants.frontLeftAngleOffset);
         frontRight.setEncoders(RobotConstants.frontRightAngleOffset);
         backLeft.setEncoders(RobotConstants.backLeftAngleOffset);
         backRight.setEncoders(RobotConstants.backRightAngleOffset);
-    }
-
-    public void readAbsoluteEncoder() {
-        SmartDashboard.putNumber("front left absolute", frontLeft.getAbsoluteEncoderValue());
-        SmartDashboard.putNumber("front right absolute", frontRight.getAbsoluteEncoderValue());
-        SmartDashboard.putNumber("back left absolute", backLeft.getAbsoluteEncoderValue());
-        SmartDashboard.putNumber("back right absolute", frontRight.getAbsoluteEncoderValue());
-
     }
 
     public void resetNavX() {

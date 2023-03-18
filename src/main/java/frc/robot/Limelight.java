@@ -38,6 +38,7 @@ public class Limelight {
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
+
     }
 
     public double getXOffset() {
