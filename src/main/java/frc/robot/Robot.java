@@ -114,6 +114,7 @@ public class Robot extends TimedRobot {
       case ALIGN:
         break;
       case BALANCE:
+        balancer.balance();
         break;
     }
 
@@ -127,6 +128,7 @@ public class Robot extends TimedRobot {
     }
     else if (controller.stateBalance()) {
       state = States.BALANCE;
+      balancer.reset();
     }
     runArm();
 

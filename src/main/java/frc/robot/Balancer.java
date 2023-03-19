@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.swervedrive.SwerveDrive;
 
 public class Balancer {
@@ -55,56 +56,53 @@ public class Balancer {
                 stop();
                 break;
         }
+        SmartDashboard.putString("Balance State", state.toString());
         return false;
     }
 
-    
     private void start() {
-        timer.start();
+        timer.reset();
+        timer.start();              
         state = States.ORIENT;
     }
     
     private void orient() {
-        swerve.drive(0, -0.01, 0, true);
-        switchState(0.5, States.FORWARD);
+        swerve.drive(0, -0.001, 0, true);
+        switchState(1, States.FORWARD);
     }
     
     private void forward() {
-        swerve.drive(0, -0.1, 0, true); //0,-0.2,0
+        swerve.drive(0, -0.15, 0, true); //0,-0.2,0
         if (Math.abs(getPitch()) > RobotConstants.balancePitchStart) {
             nextState(States.CLIMB);
             return;
         }
-        switchState(1, States.TUNINGFORWARD);
+        switchState(5, States.STOP);
     }
 
     private void climb() {
-        switchState(1.5, States.TUNINGFORWARD);
+        swerve.drive(0, -0.3, 0, true); //0,-0.2,0
+        switchState(1.25, States.TUNINGFORWARD);
     }
     
     private void tuningForward() {
-        if (getPitch() > RobotConstants.balancePitchHeavy) {
+        if (getPitch() < RobotConstants.balancePitchHeavy) {
             swerve.drive(0, (-1 * RobotConstants.balanceSpeedHeavy), 0, true);
-        }
-        else if (getPitch() > RobotConstants.balancePitchSmall) {
+        } else if (getPitch() < RobotConstants.balancePitchSmall) {
             swerve.drive(0, (-1 * RobotConstants.balanceSpeedSmall), 0, true);
-        }
-        else {
+        } else {
             nextState(States.TUNINGBACKWARD);
         }
     }
 
     private void tuningBackward() {
-        if (getPitch() < (-1 * RobotConstants.balancePitchHeavy)) {
+        if (getPitch() > (-1 * RobotConstants.balancePitchHeavy)) {
             swerve.drive(0, RobotConstants.balanceSpeedHeavy, 0, true);
-        }
-        else if (getPitch() < (-1 * RobotConstants.balancePitchSmall)) {
+        } else if (getPitch() > (-1 * RobotConstants.balancePitchSmall)) {
             swerve.drive(0, RobotConstants.balanceSpeedSmall, 0, true);
-        }
-        else if (getPitch() < RobotConstants.balancePitchSmall) {
+        } else if (getPitch() > RobotConstants.balancePitchSmall) {
             switchState(0.5, States.LOCK);
-        }
-        else {
+        } else {
             nextState(States.TUNINGFORWARD);
         }
     }
@@ -132,7 +130,6 @@ public class Balancer {
 
     public void reset() {
         state = States.START;
-        timer.reset();
     }
 
     private double getPitch() {

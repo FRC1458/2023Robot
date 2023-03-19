@@ -4,6 +4,9 @@ package frc.robot;
 import frc.robot.wrappers.XboxControllerWrapper;
 
 public class XboxController implements Controller {
+
+    boolean balancePressed = false;
+
     XboxControllerWrapper xbox;
     public XboxController () {
         xbox = new XboxControllerWrapper(0);
@@ -16,16 +19,22 @@ public class XboxController implements Controller {
 
     @Override
     public boolean stateManual() {
-        return xbox.getPOV()==270;
+        return xbox.getPOV() == 270;
     }
 
     @Override
     public boolean stateAlign() {
-        return xbox.getPOV()==90;
+        return false;//xbox.getPOV()==90;
     }
 
     @Override
     public boolean stateBalance() {
+        if (xbox.getPOV() == 90 && !balancePressed) {
+            balancePressed = true;
+            return true;
+        } else if (xbox.getPOV() != 90) {
+            balancePressed = false;
+        }
         return false;
     }
 
@@ -81,12 +90,12 @@ public class XboxController implements Controller {
 
     @Override
     public boolean armUp() {
-        return xbox.getPOV()==0;
+        return xbox.getPOV() == 0;
     }
 
     @Override
     public boolean armDown() {
-        return xbox.getPOV()==180;
+        return xbox.getPOV() == 180;
     }
 
     @Override

@@ -77,7 +77,7 @@ public class Arm {
     }
 
     public void runManual(boolean goDown, boolean goUp) {
-        if (goDown && (encoderPosition() > 52 || !armExtended)) {
+        if (goDown && (encoderPosition() > 42 || !armExtended)) {
             moveDown();
         } else if (goUp) {
             moveUp();
@@ -96,7 +96,7 @@ public class Arm {
     }
 
     public void down() {
-        moveToPreset(54);
+        moveToPreset(45);
         if (!armExtended) {
             extendArm();
         }
@@ -127,7 +127,7 @@ public class Arm {
     }
 
     public void extendArm() {
-        if (encoderPosition() > 33) {
+        if (encoderPosition() > 42) {
             armExtended = true;
             armSolenoid.forward();
         }
@@ -139,7 +139,7 @@ public class Arm {
     }
 
     public void openClaw() {
-        if (encoderPosition() > 23) {
+        if (encoderPosition() > 38) {
             clawSolenoid.reverse();
         }
     }
