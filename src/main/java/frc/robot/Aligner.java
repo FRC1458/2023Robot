@@ -20,6 +20,7 @@ public class Aligner {
     private final double metersToSwerve =  RobotConstants.metersToSwerve;//multiply by meters to give a value to input to swerve
     private double testOffset = 0.01; //Multiplies to slow bot for testing for safety
     private double xOffset;
+    private double yOffset;
     private double yDistance;
     private double xDistance;
     private final double yFinalDistance = 0.61;//in m, distance from robot to base of scoring area, add to RobotConstants
@@ -35,13 +36,18 @@ public class Aligner {
     public boolean align() {
 
         xOffset = limelight.getXOffset();
+        yOffset = limelight.getYOffset();
+        yDistance = (0.123825/Math.tan(yOffset));
+        xDistance = ((yDistance/Math.tan(90 - xOffset)) - 0.135);
         String alignment = "Straight";
-        if (xOffset < -2) {
+        if (xDistance < -.1) {
             alignment = "Left";
-        } else if (xOffset > 2) {
+        } else if (xDistance > .1) {
             alignment = "Right";
         }
         SmartDashboard.putString("LimelightAlignment", alignment);
+        SmartDashboard.putNumber("xDistance", xDistance);
+        SmartDashboard.putNumber("yDistance", yDistance);
 
         switch (state) {
             case MOVE:
