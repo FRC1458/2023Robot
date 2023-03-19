@@ -73,7 +73,7 @@ public class SwerveDrive {
     }
 
     public double turnToAngle(double goalAngle) {
-        double error = 1;
+        double error = 0.25;
         double currentAngle = navX.getYaw();
 
         double diff = (currentAngle - goalAngle) % 360;
@@ -86,9 +86,9 @@ public class SwerveDrive {
 
         if (Math.abs(currentAngle - realGoalAngle) > error) {
             if (currentAngle > realGoalAngle) {
-                return -.5;
+                return -.2;
             } else {
-                return .5;
+                return .2;
             }
         }
         return 0;

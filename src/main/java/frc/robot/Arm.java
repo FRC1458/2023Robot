@@ -78,9 +78,9 @@ public class Arm {
 
     public void runManual(boolean goDown, boolean goUp) {
         if (goDown && (encoderPosition() > 42 || !armExtended)) {
-            moveDown();
+            moveDown(RobotConstants.armSpeed);
         } else if (goUp) {
-            moveUp();
+            moveUp(RobotConstants.armSpeed);
         } else {
             armMotor.set(0);
         }
@@ -104,26 +104,33 @@ public class Arm {
 
     public void moveToPreset(double presetAngle) {
         if (encoderPosition() < presetAngle - 1.5) {
-            moveUp();
-        }
-        else if (encoderPosition() > presetAngle + 1.5) {
-            moveDown();
+            if (encoderPosition() < presetAngle - 10) {
+                moveUp(RobotConstants.armSpeed + .1);
+            } else {
+                moveUp(RobotConstants.armSpeed);
+            }
+        } else if (encoderPosition() > presetAngle + 1.5) {
+            if (encoderPosition() > presetAngle + 10) {
+                moveDown(RobotConstants.armSpeed + .1);
+            } else {
+                moveDown(RobotConstants.armSpeed);
+            }
         }
         else {
             state = armStates.IDLE;
         }      
     }
 
-    public void moveUp() {
+    public void moveUp(double speed) {
         if (encoderPosition() < 120) {
-            armMotor.set(RobotConstants.armSpeed);
+            armMotor.set(speed);
         } else {
             armMotor.set(0);
         }
     }
 
-    public void moveDown() {
-        armMotor.set(-1 * RobotConstants.armSpeed);
+    public void moveDown(double speed) {
+        armMotor.set(-1 * speed);
     }
 
     public void extendArm() {

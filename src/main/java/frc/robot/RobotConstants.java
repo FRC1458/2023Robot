@@ -19,8 +19,8 @@ public class RobotConstants {
     public final static int backRightSpeedID = 7;
     
     public final static double frontLeftAngleOffset = -5.05;
-    public final static double frontRightAngleOffset = 4.2;
-    public final static double backLeftAngleOffset = 0.4;
+    public final static double frontRightAngleOffset = 4.4;
+    public final static double backLeftAngleOffset = 0.5;
     public final static double backRightAngleOffset = -.15;
 
     public final static double kP = 0.1;

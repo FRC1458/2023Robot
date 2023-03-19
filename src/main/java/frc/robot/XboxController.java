@@ -24,17 +24,17 @@ public class XboxController implements Controller {
 
     @Override
     public boolean stateAlign() {
-        return false;//xbox.getPOV()==90;
-    }
-
-    @Override
-    public boolean stateBalance() {
         if (xbox.getPOV() == 90 && !balancePressed) {
             balancePressed = true;
             return true;
         } else if (xbox.getPOV() != 90) {
             balancePressed = false;
         }
+        return false;
+    }
+
+    @Override
+    public boolean stateBalance() {
         return false;
     }
 

@@ -8,6 +8,7 @@ public class Aligner {
 
     private enum States{
         START,
+        ROTATE,
         MOVE,
         SLOW,
         STOP
@@ -33,12 +34,12 @@ public class Aligner {
         this.limelight = limelight;
     }
 
-    public boolean align() {
+    public void align() {
 
         xOffset = limelight.getXOffset();
         yOffset = limelight.getYOffset();
-        yDistance = (0.123825/Math.tan(yOffset));
-        xDistance = ((yDistance/Math.tan(90 - xOffset)) - 0.135);
+        yDistance = (0.123825/Math.tan(Math.toRadians(yOffset))) * 100;
+        xDistance = ((yDistance/Math.tan(Math.toRadians(90 - xOffset))) - (0.135*100));
         String alignment = "Straight";
         if (xDistance < -.1) {
             alignment = "Left";
@@ -48,18 +49,36 @@ public class Aligner {
         SmartDashboard.putString("LimelightAlignment", alignment);
         SmartDashboard.putNumber("xDistance", xDistance);
         SmartDashboard.putNumber("yDistance", yDistance);
+        SmartDashboard.putString("Align State", state.toString());
 
         switch (state) {
+            case START:
+                //start();
+                state = States.ROTATE;
+                break;
+            case ROTATE:
+                rotate();
+                break;
             case MOVE:
                 move();
                 break;
             case STOP:
                 break;
         }
-        return false;
     }
 
+    private void rotate() {
+        double direction = swerve.turnToAngle(0);
+        if (direction == 0) {
+            state = States.MOVE;
+        }
+        swerve.drive(0, 0, direction, true);
+    }
     private void move() {
+    }
+
+    public void reset() {
+        state = States.START;
     }
 
 }

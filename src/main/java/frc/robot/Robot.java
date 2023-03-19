@@ -93,6 +93,7 @@ public class Robot extends TimedRobot {
 
     if (controller.resetNavX()) {
       superiorReset();
+      swerveDrive.resetNavX();
     }
 
     if (controller.resetArm()) {
@@ -112,18 +113,19 @@ public class Robot extends TimedRobot {
         manual(x, y, r);
         break;
       case ALIGN:
+        aligner.align();
         break;
       case BALANCE:
         balancer.balance();
         break;
     }
 
-    aligner.align();
 
     if (controller.stateManual()) {
       state = States.MANUAL;
     }
     else if (controller.stateAlign()) {
+      aligner.reset();
       state = States.ALIGN;
     }
     else if (controller.stateBalance()) {
@@ -177,14 +179,17 @@ public class Robot extends TimedRobot {
 
   @Override 
   public void testInit() {
-    swerveDrive.setEncoders();
+    //swerveDrive.setEncoders();
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    aligner.align();
+  }
 
   public void superiorReset() {
-    swerveDrive.resetNavX();
+    //swerveDrive.resetNavX();
+    aligner.reset();
     swerveDrive.setEncoders();
     balancer.reset();
   }
