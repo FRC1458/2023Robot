@@ -3,6 +3,7 @@ package frc.robot;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.swervedrive.SwerveDrive;
 import frc.robot.wrappers.JoystickWrapper;
@@ -34,6 +35,8 @@ public class Robot extends TimedRobot {
   private final AHRS navX;
   private final ArmNavX armNavX;
 
+  Timer timer = new Timer();
+  int counter = 0;
   Solenoid armSolenoid = new Solenoid(4, 3, 2); // change to correct values
   Solenoid clawSolenoid = new Solenoid(4, 1, 0);
   Arm arm;
@@ -69,10 +72,19 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     state = States.MANUAL;
     superiorReset();
+    timer.reset();
+    counter = 0;
+    timer.start();
   }
 
   @Override
   public void teleopPeriodic() {
+    counter ++;
+    if (timer.hasElapsed(5)) {
+      SmartDashboard.putNumber("Refresh Rate (per second)", (counter/5.0));
+      counter = 0;
+      timer.reset();
+    }
     double xAxis;
     double yAxis;
     double rAxis;
@@ -159,7 +171,7 @@ public class Robot extends TimedRobot {
     }
 
     SmartDashboard.putNumber("Arm Position", arm.encoderPosition());
-
+    SmartDashboard.putNumber("Robot Pitch", balancer.getPitch());
   }
 
   private void manual(double x, double y, double r) {

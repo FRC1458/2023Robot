@@ -62,11 +62,11 @@ public class RobotConstants {
     public final static int lidarPort = 1;
     public final static int armLidarPort = 0;
 
-    public final static double balancePitchStart = 10;
-    public final static double balancePitchHeavy = 15;
-    public final static double balanceSpeedHeavy = 0.2;
+    public final static double balancePitchStart = 8;
+    public final static double balancePitchHeavy = 8;
+    public final static double balanceSpeedHeavy = .05;
     public final static double balancePitchSmall = 8;
-    public final static double balanceSpeedSmall = 0.1;
+    public final static double balanceSpeedSmall = 0.025;
 
     public final static double metersToSwerve = 0.0235;
 
