@@ -15,15 +15,17 @@ public class Aligner {
     }
 
     private final SwerveDrive swerve;
-    private final Timer timer;
+    private Timer timer;
     private final Limelight limelight;
+
 
     private final double metersToSwerve =  RobotConstants.metersToSwerve;//multiply by meters to give a value to input to swerve
     private double testOffset = 0.01; //Multiplies to slow bot for testing for safety
     private double xOffset;
     private double yOffset;
-    private double yDistance;
+    private double yDistance; //units in cm
     private double xDistance;
+    private  double yGoal = 20;
     private final double yFinalDistance = 0.61;//in m, distance from robot to base of scoring area, add to RobotConstants
     private States state = States.START;
 
@@ -63,6 +65,7 @@ public class Aligner {
                 move();
                 break;
             case STOP:
+                stop();
                 break;
         }
     }
@@ -75,6 +78,17 @@ public class Aligner {
         swerve.drive(0, 0, direction, true);
     }
     private void move() {
+        /*yDistance -= 20;//align 20cm in front of april tag
+        double time = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+        timer.reset();
+        swerve.drive(0.1, 0.1, 0, true);
+        if (timer.hasElapsed(Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2)))) {
+            state = States.STOP;
+        }*/
+    }
+    public void stop() {
+        SmartDashboard.putNumber("xError (degrees)", limelight.getXOffset());
+        SmartDashboard.putNumber("yError (degrees)", limelight.getYOffset());
     }
 
     public void reset() {
