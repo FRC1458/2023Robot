@@ -103,6 +103,8 @@ public class Robot extends TimedRobot {
     yAxis = controller.getSwerveY();
     rAxis = controller.getSwerveR();
 
+    
+
     if (controller.resetNavX()) {
       superiorReset();
       swerveDrive.resetNavX();

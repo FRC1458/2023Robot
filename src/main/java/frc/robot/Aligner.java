@@ -23,8 +23,7 @@ public class Aligner {
     private double testOffset = 0.01; //Multiplies to slow bot for testing for safety
     private double xOffset;
     private double yOffset;
-    private double yDistance; //units in cm
-    private double xDistance;
+    private double rOffset;
     private  double yGoal = 20;
     private final double yFinalDistance = 0.61;//in m, distance from robot to base of scoring area, add to RobotConstants
     private States state = States.START;
@@ -37,27 +36,26 @@ public class Aligner {
     }
 
     public void align() {
-
+        limelight.readPeriodic();
         xOffset = limelight.getXOffset();
         yOffset = limelight.getYOffset();
-        yDistance = (0.123825/Math.tan(Math.toRadians(yOffset))) * 100;
-        xDistance = ((yDistance/Math.tan(Math.toRadians(90 - xOffset))) - (0.135*100));
+        rOffset = limelight.getRotation();
         String alignment = "Straight";
-        if (xDistance < -.1) {
+        if (xOffset < -.1) {
             alignment = "Left";
-        } else if (xDistance > .1) {
+        } else if (xOffset > .1) {
             alignment = "Right";
         }
         SmartDashboard.putString("LimelightAlignment", alignment);
-        SmartDashboard.putNumber("xDistance", xDistance);
-        SmartDashboard.putNumber("yDistance", yDistance);
+        SmartDashboard.putNumber("xDistance", xOffset);
+        SmartDashboard.putNumber("yDistance", yOffset);
+        SmartDashboard.putNumber("rotationOffset", rOffset);
         SmartDashboard.putString("Align State", state.toString());
 
         switch (state) {
             case START:
                 //start();
-                state = States.ROTATE;
-                break;
+              //  state = States.ROTATE;
             case ROTATE:
                 rotate();
                 break;

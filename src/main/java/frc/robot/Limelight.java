@@ -17,6 +17,7 @@ public class Limelight {
     double y;
     double area;
     final double[] defaultVals = new double[6];
+    double[] positionValues;
 
     public Limelight(int pipeline) {
         table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -39,41 +40,25 @@ public class Limelight {
         y = ty.getDouble(0);
         area = ta.getDouble(0);
         //post to smart dashboard periodically
-        SmartDashboard.putNumber("LimelightX", x);
-        SmartDashboard.putNumber("LimelightY", y);
-        SmartDashboard.putNumber("LimelightArea", area);
-
+        //SmartDashboard.putNumber("LimelightX", x);
+        //SmartDashboard.putNumber("LimelightY", y);
+        //SmartDashboard.putNumber("LimelightArea", area);
+        positionValues = botPos.getDoubleArray(defaultVals);
+        
     }
 
     public double getXOffset() {
-        return botPos.getDoubleArray(defaultVals)[0];
+        return positionValues[0];
     }
 
     public double getYOffset() {
-       return botPos.getDoubleArray(defaultVals)[1];
-    }
-
-    public double getYaw() {
-        return botPos.getDoubleArray(defaultVals)[5];
-    }
-    public void setPipeline(int newPipeline) {
-        pipeline = newPipeline;
+       return positionValues[1];
     }
 
     public double getRotation() {
-        return table.getEntry("tx").getDouble(0);
+        return positionValues[5];
     }
-
-    public void display() {
-        double x = tx.getDouble(0);
-        double y = ty.getDouble(0);
-        double ledMode = ty.getDouble(0);
-        SmartDashboard.putNumber("LimelightX", x);
-        SmartDashboard.putNumber("LimelightY", y);
-        SmartDashboard.putNumber("LimelightLedMode", ledMode);
-    }
-
-    public double get_rotation() {
-        return table.getEntry("tx").getDouble(0);
+    public void setPipeline(int newPipeline) {
+        pipeline = newPipeline;
     }
 }
