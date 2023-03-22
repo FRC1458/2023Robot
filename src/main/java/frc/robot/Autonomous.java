@@ -1,9 +1,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.swervedrive.SwerveDrive;
+
 
 public class Autonomous {
     private Balancer balancer;
+    private Arm arm;
+    private boolean finishedScoring;
+    private boolean armRaised; 
+    private SwerveDrive swerve;
+    private Lidar lidar;
+
 
     public Autonomous(Balancer balancer) {
         this.balancer = balancer;
@@ -25,19 +33,34 @@ public class Autonomous {
     }
     //do initial scoring and possible second scoring later
     private void left() {
-        if (RobotConstants.willBalance) {
-            balancer.balance();
-        }
+        scoreStart();
     }
     private void center() {
-        if (RobotConstants.willBalance) {
+        scoreStart();
+        if (RobotConstants.willBalance && finishedScoring) {
             balancer.balance();
         }
     }
     private void right() {
-        if (RobotConstants.willBalance) {
-            balancer.balance();
-        }
+        scoreStart();
+    }
+
+    private void scoreStart(){
+        if (finishedScoring = false){  
+             arm.moveToPreset(105);
+
+            if (arm.encoderPosition()>103.5) {
+                arm.extendArm();
+                armRaised = true;
+            }
+            else if (armRaised && lidar.getDistanceCentimeters()>10){ //change lidar distamce
+                swerve.drive(0, -0.1, 0, true);
+            }
+            else if (lidar.getDistanceCentimeters()<10){ //change lidar distance
+                arm.openClaw();
+                finishedScoring = true;
+            }
+    }
     }
 }
 
