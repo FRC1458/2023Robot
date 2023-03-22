@@ -12,9 +12,11 @@ public class Limelight {
     NetworkTableEntry ty;
     NetworkTableEntry ta;
     NetworkTableEntry led;
+    NetworkTableEntry botPos;
     double x;
     double y;
     double area;
+    final double[] defaultVals = new double[6];
 
     public Limelight(int pipeline) {
         table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -22,6 +24,8 @@ public class Limelight {
         ty = table.getEntry("ty");
         ta = table.getEntry("ta");
         led = table.getEntry("ledMode");
+        botPos = table.getEntry("botpose");
+
         led.setNumber(3.000);
         x = tx.getDouble(0);
         y = ty.getDouble(0);
@@ -42,12 +46,16 @@ public class Limelight {
     }
 
     public double getXOffset() {
-        return x;
-    }
-    public double getYOffset() {
-        return y;
+        return botPos.getDoubleArray(defaultVals)[0];
     }
 
+    public double getYOffset() {
+       return botPos.getDoubleArray(defaultVals)[1];
+    }
+
+    public double getYaw() {
+        return botPos.getDoubleArray(defaultVals)[5];
+    }
     public void setPipeline(int newPipeline) {
         pipeline = newPipeline;
     }
