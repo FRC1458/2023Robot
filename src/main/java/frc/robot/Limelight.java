@@ -25,7 +25,7 @@ public class Limelight {
         ty = table.getEntry("ty");
         ta = table.getEntry("ta");
         led = table.getEntry("ledMode");
-        botPos = table.getEntry("botpose");
+        botPos = table.getEntry("botpose_targetspace");
 
         led.setNumber(3.000);
         x = tx.getDouble(0);
@@ -56,7 +56,7 @@ public class Limelight {
     }
 
     public double getRotation() {
-        return positionValues[5];
+        return positionValues[4];
     }
     public void setPipeline(int newPipeline) {
         pipeline = newPipeline;

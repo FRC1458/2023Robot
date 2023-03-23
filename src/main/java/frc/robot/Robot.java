@@ -178,6 +178,7 @@ public class Robot extends TimedRobot {
 
   private void manual(double x, double y, double r) {
     swerveDrive.drive(x, y, r, true);
+    SmartDashboard.putNumber("rRotationASDF", limelight.getRotation());
   }
 
   @Override

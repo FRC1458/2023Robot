@@ -23,7 +23,7 @@ public class Aligner {
     private double testOffset = 0.01; //Multiplies to slow bot for testing for safety
     private double xOffset;
     private double yOffset;
-    private double rOffset;
+    private double rTarget;
     private  double yGoal = 20;
     private final double yFinalDistance = 0.61;//in m, distance from robot to base of scoring area, add to RobotConstants
     private States state = States.START;
@@ -39,7 +39,7 @@ public class Aligner {
         limelight.readPeriodic();
         xOffset = limelight.getXOffset();
         yOffset = limelight.getYOffset();
-        rOffset = limelight.getRotation();
+        rTarget = limelight.getRotation();
         String alignment = "Straight";
         if (xOffset < -.1) {
             alignment = "Left";
@@ -47,20 +47,22 @@ public class Aligner {
             alignment = "Right";
         }
         SmartDashboard.putString("LimelightAlignment", alignment);
-        SmartDashboard.putNumber("xDistance", xOffset);
-        SmartDashboard.putNumber("yDistance", yOffset);
-        SmartDashboard.putNumber("rotationOffset", rOffset);
+        SmartDashboard.putNumber("xOffset", xOffset);
+        SmartDashboard.putNumber("yOffset", yOffset);
+        SmartDashboard.putNumber("rTarget", rTarget);
         SmartDashboard.putString("Align State", state.toString());
+
+
 
         switch (state) {
             case START:
                 //start();
-              //  state = States.ROTATE;
+                state = States.ROTATE;
             case ROTATE:
                 rotate();
                 break;
             case MOVE:
-                move();
+                //move();
                 break;
             case STOP:
                 stop();
@@ -69,11 +71,11 @@ public class Aligner {
     }
 
     private void rotate() {
-        double direction = swerve.turnToAngle(0);
-        if (direction == 0) {
+        double direction = swerve.turnToAngle(0, rTarget);
+        if (Math.abs(rTarget) < 3) {
             state = States.MOVE;
         }
-        swerve.drive(0, 0, direction, true);
+        swerve.drive(0, 0, -rTarget/200, true);
     }
     private void move() {
         /*yDistance -= 20;//align 20cm in front of april tag
