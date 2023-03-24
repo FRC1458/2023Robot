@@ -71,8 +71,7 @@ public class RobotConstants {
     public final static double metersToSwerve = 0.0235;
 
     public enum Position {RIGHT, CENTER, LEFT}
-    public static final Position position = Position.RIGHT;
-    public static final boolean willBalance = true;
+    public static final Position position = Position.CENTER;
 
     public static final double armSpeed = .35;
 }

@@ -72,7 +72,7 @@ public class Balancer {
     }
     
     private void forward() {
-        swerve.drive(0, -0.15, 0, true); //0,-0.2,0
+        swerve.drive(0, -0.2, 0, true); //0,-0.2,0
         if (Math.abs(getPitch()) > RobotConstants.balancePitchStart) {
             nextState(States.CLIMB);
             return;
@@ -82,7 +82,7 @@ public class Balancer {
 
     private void climb() {
         swerve.drive(0, -0.2, 0, true); //0,-0.2,0
-        switchState(1.5, States.TUNINGFORWARD);
+        switchState(2, States.TUNINGFORWARD);
     }
     
     private void tuningForward() {

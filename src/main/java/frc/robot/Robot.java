@@ -30,7 +30,6 @@ public class Robot extends TimedRobot {
   Limelight limelight;
   private Balancer balancer;
   private Aligner aligner;
-  private Autonomous autonomous;
 
   private final AHRS navX;
   private final ArmNavX armNavX;
@@ -56,12 +55,11 @@ public class Robot extends TimedRobot {
 
     balancer = new Balancer(swerveDrive, navX);
     aligner = new Aligner(swerveDrive, limelight);
-    autonomous = new Autonomous(balancer);
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
 
-    arm = new Arm(armSolenoid, clawSolenoid, armNavX);
+    arm = new Arm(armSolenoid, clawSolenoid);
   }
 
   @Override
@@ -72,19 +70,10 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     state = States.MANUAL;
     superiorReset();
-    timer.reset();
-    counter = 0;
-    timer.start();
   }
 
   @Override
   public void teleopPeriodic() {
-    counter ++;
-    if (timer.hasElapsed(5)) {
-      SmartDashboard.putNumber("Refresh Rate (per second)", (counter/5.0));
-      counter = 0;
-      timer.reset();
-    }
     double xAxis;
     double yAxis;
     double rAxis;
@@ -93,7 +82,6 @@ public class Robot extends TimedRobot {
 
     //SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
-    SmartDashboard.putNumber("Arm NavX angle", armNavX.getPitch());
     SmartDashboard.putString("State", state.toString());
     //SmartDashboard.putNumber("Arm Encoder", arm.getEncoder());
 
@@ -186,7 +174,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     //autonomous.autonomous();
-    balancer.balance();
   }
 
   @Override 

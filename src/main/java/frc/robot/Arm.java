@@ -18,7 +18,7 @@ public class Arm {
         IDLE
     }
 
-    public Arm(Solenoid armSolenoid, Solenoid clawSolenoid, ArmNavX armnavx) {
+    public Arm(Solenoid armSolenoid, Solenoid clawSolenoid) {
         this.armSolenoid = armSolenoid;
         this.clawSolenoid = clawSolenoid;
         armMotor = new TalonFXWrapper(43, true);
