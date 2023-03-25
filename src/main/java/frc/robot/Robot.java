@@ -39,6 +39,7 @@ public class Robot extends TimedRobot {
   Solenoid armSolenoid = new Solenoid(4, 3, 2); // change to correct values
   Solenoid clawSolenoid = new Solenoid(4, 1, 0);
   Arm arm;
+  Autonomous autonomous;
 
   public Robot() {
     super(0.03);
@@ -60,6 +61,7 @@ public class Robot extends TimedRobot {
     boostedSpeed = RobotConstants.boostedSpeed;
 
     arm = new Arm(armSolenoid, clawSolenoid);
+    autonomous = new Autonomous(swerveDrive, arm);
   }
 
   @Override
@@ -169,22 +171,20 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     superiorReset();
+    autonomous.resetAuto();
   }
 
   @Override
   public void autonomousPeriodic() {
-    //autonomous.autonomous();
+    autonomous.runAuto(true);
+    //autonomous.simpleAuto();
   }
 
   @Override 
-  public void testInit() {
-    //swerveDrive.setEncoders();
-  }
+  public void testInit() {}
 
   @Override
-  public void testPeriodic() {
-    aligner.align();
-  }
+  public void testPeriodic() {}
 
   public void superiorReset() {
     //swerveDrive.resetNavX();

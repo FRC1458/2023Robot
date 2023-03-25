@@ -11,7 +11,7 @@ public class Arm {
     private armStates state = armStates.IDLE;
     private boolean armExtended = false;
 
-    private enum armStates {
+    public enum armStates {
         TOP,
         MIDDLE,
         BOTTOM,
@@ -62,6 +62,10 @@ public class Arm {
         if (encoderPosition() < 38) {
             closeClaw();
         }
+    }
+
+    public armStates getState() {
+        return state;
     }
 
     public void setUp() {
@@ -122,11 +126,7 @@ public class Arm {
     }
 
     public void moveUp(double speed) {
-        if (encoderPosition() < 120) {
-            armMotor.set(speed);
-        } else {
-            armMotor.set(0);
-        }
+        armMotor.set(speed);
     }
 
     public void moveDown(double speed) {

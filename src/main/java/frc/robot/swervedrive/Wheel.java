@@ -78,11 +78,11 @@ public class Wheel {
 
         double realGoalRotations = (currentAngle - diff) * RobotConstants.swerveDriveGearRatio / 360 + relativeOffset;
 
-        SmartDashboard.putNumber("Current Angle " + wheelName, currentAngle);
-        SmartDashboard.putNumber("Goal Angle " + wheelName, goalAngle);
+        //SmartDashboard.putNumber("Current Angle " + wheelName, currentAngle);
+        //SmartDashboard.putNumber("Goal Angle " + wheelName, goalAngle);
         //SmartDashboard.putNumber("difference " + wheelName, diff);
         //SmartDashboard.putNumber("SPEED " + wheelName + wheelName, speed);
-        SmartDashboard.putNumber("Absolute Encoder Angle " + wheelName, (offset + getAbsoluteEncoderValue()) * (360 / RobotConstants.swerveDriveGearRatio));
+        //SmartDashboard.putNumber("Absolute Encoder Angle " + wheelName, (offset + getAbsoluteEncoderValue()) * (360 / RobotConstants.swerveDriveGearRatio));
 
         if (speed != 0 || diagnostic) {
             pidController.setReference(realGoalRotations, CANSparkMax.ControlType.kPosition);
@@ -91,13 +91,13 @@ public class Wheel {
     }
 
     public void setEncoders(double offset) {
-        SmartDashboard.putNumber(wheelName + " set pos rel", encoder.getPosition());
+        //SmartDashboard.putNumber(wheelName + " set pos rel", encoder.getPosition());
         double absolutePosition = offset + (absoluteEncoder.getSelectedSensorPosition(0) % 4096) * RobotConstants.swerveDriveGearRatio / 4096.0;
 
-        SmartDashboard.putNumber(wheelName + " set pos abs", absolutePosition);
+        //SmartDashboard.putNumber(wheelName + " set pos abs", absolutePosition);
         relativeOffset = encoder.getPosition() - absolutePosition;
-        SmartDashboard.putNumber(wheelName + "set pos offset", relativeOffset);
-        SmartDashboard.putNumber(wheelName + " set pos after", encoder.getPosition() + relativeOffset);
+        //SmartDashboard.putNumber(wheelName + "set pos offset", relativeOffset);
+        //SmartDashboard.putNumber(wheelName + " set pos after", encoder.getPosition() + relativeOffset);
         this.drive(0.000000000001, 0.0);
     }
 

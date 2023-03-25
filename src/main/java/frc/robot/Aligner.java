@@ -46,10 +46,10 @@ public class Aligner {
         } else if (xDistance > .1) {
             alignment = "Right";
         }
-        SmartDashboard.putString("LimelightAlignment", alignment);
-        SmartDashboard.putNumber("xDistance", xDistance);
-        SmartDashboard.putNumber("yDistance", yDistance);
-        SmartDashboard.putString("Align State", state.toString());
+        //SmartDashboard.putString("LimelightAlignment", alignment);
+        //SmartDashboard.putNumber("xDistance", xDistance);
+        //SmartDashboard.putNumber("yDistance", yDistance);
+        //SmartDashboard.putString("Align State", state.toString());
 
         switch (state) {
             case START:

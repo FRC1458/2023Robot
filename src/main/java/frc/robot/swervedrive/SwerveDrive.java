@@ -54,13 +54,6 @@ public class SwerveDrive {
         if (fieldOriented) {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, Rotation2d.fromDegrees(-(navX.getYaw())));
         }
-        SmartDashboard.putNumber("angle from navx", navX.getYaw());
-
-        SmartDashboard.putNumber("X", x);
-        SmartDashboard.putNumber("Y", y);
-        SmartDashboard.putNumber("R", r);
-        SmartDashboard.putNumber("Robot Angle", navX.getYaw());
-        SmartDashboard.putNumber("Robot Angle (pitch)", navX.getPitch());
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
 

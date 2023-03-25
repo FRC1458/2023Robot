@@ -64,7 +64,7 @@ public class RobotConstants {
 
     public final static double balancePitchStart = 8;
     public final static double balancePitchHeavy = 12;
-    public final static double balanceSpeedHeavy = .05;
+    public final static double balanceSpeedHeavy = .09;
     public final static double balancePitchSmall = 8;
     public final static double balanceSpeedSmall = 0.05;
 
@@ -73,5 +73,5 @@ public class RobotConstants {
     public enum Position {RIGHT, CENTER, LEFT}
     public static final Position position = Position.CENTER;
 
-    public static final double armSpeed = .35;
+    public static final double armSpeed = .5;
 }
