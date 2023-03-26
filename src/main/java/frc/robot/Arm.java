@@ -15,6 +15,7 @@ public class Arm {
         TOP,
         MIDDLE,
         BOTTOM,
+        INSIDE,
         IDLE
     }
 
@@ -54,6 +55,9 @@ public class Arm {
             case BOTTOM:
                 down();
                 break;
+            case INSIDE:
+                inside();
+                break;
             case IDLE:
                 runManual(goDown, goUp);
                 break;
@@ -78,6 +82,9 @@ public class Arm {
     
     public void setBottom() {
         state = armStates.BOTTOM;
+    }
+    public void setInside() {
+        state = armStates.INSIDE;
     }
 
     public void runManual(boolean goDown, boolean goUp) {
@@ -105,15 +112,18 @@ public class Arm {
             extendArm();
         }
     }
+    public  void inside() {
+        moveToPreset(25);
+    }
 
     public void moveToPreset(double presetAngle) {
-        if (encoderPosition() < presetAngle - 1.5) {
+        if (encoderPosition() < presetAngle - 3) {
             if (encoderPosition() < presetAngle - 10) {
                 moveUp(RobotConstants.armSpeed + .1);
             } else {
                 moveUp(RobotConstants.armSpeed);
             }
-        } else if (encoderPosition() > presetAngle + 1.5) {
+        } else if (encoderPosition() > presetAngle + 3) {
             if (encoderPosition() > presetAngle + 10) {
                 moveDown(RobotConstants.armSpeed + .1);
             } else {

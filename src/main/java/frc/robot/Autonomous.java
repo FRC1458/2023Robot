@@ -25,7 +25,10 @@ public class Autonomous {
         swerve.drive(0, -0.0000000000001, 0, true);
         arm.reset();
         arm.setUp();
+        timer.reset();
+        timer.start();
         while(arm.getState() == Arm.armStates.TOP) {
+            if (timer.hasElapsed(5)) return;
             arm.runArm(false, false);
         }
         swerve.drive(0, 0,0, true);
@@ -38,20 +41,42 @@ public class Autonomous {
         }
         swerve.drive(0, 0, 0, true);
         arm.openClaw();
-        driveBackwards();
+        timer.reset();
+        while (!timer.hasElapsed(1.5)){}
+        driveBackwards(0.5);
+        arm.retractArm();
+        arm.closeClaw();
+        timer.reset();
+        while (!timer.hasElapsed(0.5)) {}
+        arm.setInside();
+        timer.reset();
+        while (arm.getState() == Arm.armStates.INSIDE) {
+            if (timer.hasElapsed(5)) return;
+            arm.runArm(false, false);
+        }
+        arm.runArm(false, false);
+        /*double direction = swerve.turnToAngle(180);
+        while (direction != 0) {
+            direction = swerve.turnToAngle(180);
+            swerve.drive(0, 0, direction, true);
+        }
+        swerve.drive(0, 0, 0, true);
+        swerve.resetNavX();*/
+        driveBackwards(3);
+        swerve.drive(0, 0.0000001, 0, true);
     }
     public void simpleAuto() {
         if (hasRun) {
             return;
         }
         hasRun = true;
-        driveBackwards();
+        driveBackwards(3);
     }
-    public void driveBackwards() {
+    public void driveBackwards(double time) {
         timer.start();
         timer.reset();
         swerve.drive(0, 0.3, 0, false);
-        while (!timer.hasElapsed(3)) {}
+        while (!timer.hasElapsed(time)) {}
         swerve.drive(0, 0, 0, true);
     }
 }

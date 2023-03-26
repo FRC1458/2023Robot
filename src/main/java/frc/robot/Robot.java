@@ -103,7 +103,7 @@ public class Robot extends TimedRobot {
     }
 
     if (controller.lockWheels()) {
-      swerveDrive.drive(0.01, 0, 0, true);
+      swerveDrive.drive(0, 0, 0.01, true);
     }
 
     x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
