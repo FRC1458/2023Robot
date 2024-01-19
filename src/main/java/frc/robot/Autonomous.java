@@ -57,7 +57,7 @@ public class Autonomous {
                 swerve.drive(0, -0.1, 0, true);
             }
             else if (lidar.getDistanceCentimeters()<10){ //change lidar distance
-                arm.openClaw();
+                //arm.openClaw();
                 finishedScoring = true;
             }
     }

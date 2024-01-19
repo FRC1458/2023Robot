@@ -75,6 +75,10 @@ public class Wheel {
         if (Math.abs(diff) > 180) {
             diff = diff - 360 * Math.signum(diff);
         }
+        if (Math.abs(diff) > 90) {
+            diff = diff - 180 * Math.signum(diff);
+            speed *= -1;
+        }
 
         double realGoalRotations = (currentAngle - diff) * RobotConstants.swerveDriveGearRatio / 360 + relativeOffset;
 

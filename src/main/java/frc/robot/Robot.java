@@ -1,6 +1,13 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxRelativeEncoder.Type;
+
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -37,7 +44,7 @@ public class Robot extends TimedRobot {
 
   Timer timer = new Timer();
   int counter = 0;
-  Solenoid armSolenoid = new Solenoid(4, 3, 2); // change to correct values
+  Solenoid armSolenoid = new Solenoid(4, 3, 2);
   Solenoid clawSolenoid = new Solenoid(4, 1, 0);
   Arm arm;
 
@@ -60,6 +67,8 @@ public class Robot extends TimedRobot {
 
     regularSpeed = RobotConstants.regularSpeed;
     boostedSpeed = RobotConstants.boostedSpeed;
+
+    SmartDashboard.putNumber("Robot Speed", regularSpeed);
 
     arm = new Arm(armSolenoid, clawSolenoid, armNavX);
   }
@@ -89,7 +98,7 @@ public class Robot extends TimedRobot {
     double yAxis;
     double rAxis;
     double x,y,r,speedIncrease;
-    speedIncrease = regularSpeed;
+    speedIncrease = SmartDashboard.getNumber("Robot Speed", regularSpeed);
 
     //SmartDashboard.putNumber("Lidar data", lidar.getDistanceCentimeters());
     SmartDashboard.putNumber("Arm Lidar data", armLidar.getDistanceCentimeters());
@@ -103,11 +112,12 @@ public class Robot extends TimedRobot {
     yAxis = controller.getSwerveY();
     rAxis = controller.getSwerveR();
 
-    
+
 
     if (controller.resetNavX()) {
       superiorReset();
       swerveDrive.resetNavX();
+      navX.resetDisplacement();
     }
 
     if (controller.resetArm()) {
@@ -118,9 +128,9 @@ public class Robot extends TimedRobot {
       swerveDrive.drive(0.01, 0, 0, true);
     }
 
-    x = -(Math.abs(xAxis)*xAxis) * speedIncrease;
-    y= Math.abs(yAxis)*yAxis * speedIncrease;
-    r= Math.abs(rAxis)*rAxis * speedIncrease;
+    x = -Math.pow(xAxis, 3) * speedIncrease;
+    y = Math.pow(yAxis, 3) * speedIncrease;
+    r = Math.pow(rAxis, 3) * speedIncrease;
 
     switch(state) {
       case MANUAL:
@@ -148,6 +158,11 @@ public class Robot extends TimedRobot {
     }
     runArm();
 
+    SmartDashboard.putNumber("NavX Angle", navX.getAngle());
+    SmartDashboard.putNumber("NavX Displacement X", navX.getDisplacementX());
+    SmartDashboard.putNumber("NavX Displacement Y", navX.getDisplacementY());
+    SmartDashboard.putNumber("NavX Displacement Z", navX.getDisplacementZ());
+
   }
 
   public void runArm() {
@@ -166,11 +181,11 @@ public class Robot extends TimedRobot {
       arm.retractArm();
     }
 
-    if (controller.clawOpen()) {
-      arm.openClaw();
-    } else if (controller.clawClose()) {
-      arm.closeClaw();
-    }
+    if (controller.clawOpen()) {//LT=ACCEPT
+      arm.clawAccept();
+    } else if (controller.clawClose()) {//RT=REJECT
+      arm.clawReject();
+    } else arm.clawStop();
 
     SmartDashboard.putNumber("Arm Position", arm.encoderPosition());
     SmartDashboard.putNumber("Robot Pitch", balancer.getPitch());
@@ -188,19 +203,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    
+
     //autonomous.autonomous();
     balancer.balance();
-  }
 
-  @Override 
-  public void testInit() {
-    //swerveDrive.setEncoders();
-  }
-
-  @Override
-  public void testPeriodic() {
-    aligner.align();
   }
 
   public void superiorReset() {

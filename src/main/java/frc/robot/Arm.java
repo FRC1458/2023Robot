@@ -3,8 +3,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.wrappers.TalonFXWrapper;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Arm {
+
     private final Solenoid armSolenoid;
     private final Solenoid clawSolenoid;
     private final TalonFXWrapper armMotor;
@@ -18,7 +22,22 @@ public class Arm {
         IDLE
     }
 
+    public enum intakeStates {
+        ACCCEPT,
+        REJECT,
+        STOP
+    }
+    public intakeStates intakeState = intakeStates.STOP;
+    
+    private final static int clawID = 8;
+    private final static double clawSpeed = .35;
+    public final static CANSparkMax claw = new CANSparkMax(clawID, MotorType.kBrushless);
+
     public Arm(Solenoid armSolenoid, Solenoid clawSolenoid, ArmNavX armnavx) {
+        
+        claw.clearFaults();
+        claw.setIdleMode(IdleMode.kBrake);
+        
         this.armSolenoid = armSolenoid;
         this.clawSolenoid = clawSolenoid;
         armMotor = new TalonFXWrapper(43, true);
@@ -28,7 +47,7 @@ public class Arm {
     public double encoderPosition() {
         TalonFXSensorCollection sensors = armMotor.talon.getSensorCollection();
         double absPos = sensors.getIntegratedSensorPosition() * RobotConstants.armEncoderRatio;
-        System.out.print("Encoder: " + absPos);
+        //System.out.print("Encoder: " + absPos);
         SmartDashboard.putNumber("Arm encoder: ", absPos);
         return absPos;
     }
@@ -58,11 +77,11 @@ public class Arm {
                 runManual(goDown, goUp);
                 break;
         }
-
-        if (encoderPosition() < 38) {
-            closeClaw();
-        }
     }
+
+    public void clawAccept() {if (intakeState != intakeStates.ACCCEPT) claw.set(clawSpeed); intakeState = intakeStates.ACCCEPT;}
+    public void clawStop() {if (intakeState != intakeStates.STOP) claw.stopMotor(); intakeState = intakeStates.STOP;}
+    public void clawReject() {if (intakeState != intakeStates.REJECT) claw.set(-clawSpeed); intakeState = intakeStates.REJECT;}
 
     public void setUp() {
         state = armStates.TOP;
@@ -145,13 +164,4 @@ public class Arm {
         armSolenoid.reverse();
     }
 
-    public void openClaw() {
-        if (encoderPosition() > 38) {
-            clawSolenoid.reverse();
-        }
-    }
-
-    public void closeClaw() {
-        clawSolenoid.forward();
-    }
 }

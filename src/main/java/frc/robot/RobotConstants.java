@@ -38,7 +38,7 @@ public class RobotConstants {
 
     public final static double swerveDriveGearRatio = 12.8;
 
-    public final static double regularSpeed = .75;
+    public final static double regularSpeed = .5;
     public final static double boostedSpeed = .75;
 
     public final static boolean fieldOriented = true;
